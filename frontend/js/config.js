@@ -1,3 +1,6 @@
+
+/*
+
 // Centralized API base URL for production
 // Update this value if backend URL changes
 window.API_BASE_URL = "https://vams-vnbr.onrender.com";
@@ -96,7 +99,7 @@ window.BASE_URL = window.API_BASE_URL;
 		try {
 			const cloned = response.clone();
 			responseText = await cloned.text();
-			try { responseText = JSON.parse(responseText); } catch { /* keep as text */ }
+			try { responseText = JSON.parse(responseText); } catch
 		} catch (e) {
 			responseText = "<could not read response body>";
 		}
@@ -118,3 +121,10 @@ window.BASE_URL = window.API_BASE_URL;
 })();
 
 export default window.API_BASE_URL;
+
+
+
+*/
+
+
+window.API_BASE_URL = "https://vams-vnbr.onrender.com";
