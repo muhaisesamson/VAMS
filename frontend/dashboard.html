@@ -1747,7 +1747,8 @@
     function getToken() { return localStorage.getItem("vamsToken"); }
     function getUser() { try { return JSON.parse(localStorage.getItem("vamsUser")); } catch { return null; } }
     function byId(id) { return document.getElementById(id); }
-
+    const BASE_URL = window.API_BASE_URL;
+    
     function showToast(msg, duration = 3500) {
       const t = byId("toast");
       t.textContent = msg;
@@ -1788,6 +1789,7 @@
 
     // ─── AUTH GUARD ───
     if (!getToken()) { window.location.href = "index.html"; }
+    
 
     // ─── LOAD DASHBOARD ───
     async function loadDashboard() {
