@@ -1,0 +1,314 @@
+<!--
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community | Uganda Veterans Affairs Management System</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="">
+  <div class="top-strip"></div>
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Uganda Veterans</strong>
+          <span>Affairs Management System</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a data-nav href="index.html">Home</a>
+        <a data-nav href="services.html">Services</a>
+        <a data-nav href="community.html">Community</a>
+        <a data-nav href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+<main class="section">
+
+    <section class="section">
+
+      <div class="container info-grid">
+
+          <div class="panel">
+
+              <span class="badge">
+                  Veteran Support
+              </span>
+
+              <h2 style="margin:15px 0;">
+                  Your Service to Uganda Will Always Be Valued
+              </h2>
+
+              <p class="subtle" style="line-height:1.8;">
+
+                  Your sacrifice, discipline and commitment helped protect
+                  our nation. Although military service may have ended,
+                  your contribution to Uganda remains an important part of
+                  our national history.
+
+              </p>
+
+              <p class="subtle" style="line-height:1.8; margin-top:20px;">
+
+                  This platform is intended to connect veterans with
+                  support groups, welfare initiatives and community
+                  programmes that can provide encouragement, guidance and
+                  companionship during life after service.
+
+              </p>
+
+          </div>
+
+          <div class="panel" style="padding:0; overflow:hidden;">
+
+              <img
+              src="assets/matchingupdf.jpg"
+              alt="UPDF Soldiers">
+
+          </div>
+
+      </div>
+
+    </section>
+
+    <section class="section">
+    
+        <div class="container">
+        
+            <div class="panel">
+            
+                <span class="badge">
+                    Available Communities
+                </span>
+              
+                <h2 style="margin:15px 0;">
+                    Veteran Support Communities
+                </h2>
+              
+                <div class="note" style="margin-top:25px;">
+                
+                    No registered veteran communities are currently available.
+                
+                </div>
+              
+                <p class="subtle" style="margin-top:20px;">
+                
+                    Once recognised veteran communities and support groups
+                    are registered with the system, they will appear here
+                    for veterans to join and participate in.
+                
+                </p>
+              
+            </div>
+          
+        </div>
+      
+    </section>
+</main>
+  <script>
+
+    if(!localStorage.getItem("vamsToken")){
+    
+        window.location="login.html";
+    
+    }
+
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
+
+-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community | Uganda Veterans Affairs Management System</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ── COMMUNITY PAGE — TEXT & TYPOGRAPHY ONLY ─────────────── */
+
+    /* Inherit Inter as base font */
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+
+    /* Badge — more refined label */
+    .badge {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    /* Panel headings */
+    .panel h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -.025em;
+      color: var(--text);
+      margin: 16px 0 0;
+    }
+
+    /* Body paragraphs inside panels */
+    .panel p.subtle {
+      font-size: 1rem;
+      line-height: 1.78;
+      color: var(--muted);
+      max-width: 54ch;
+      margin-top: 16px;
+    }
+
+    /* Empty-state note text */
+    .note {
+      font-size: .97rem;
+      font-weight: 600;
+      line-height: 1.5;
+      letter-spacing: .005em;
+    }
+
+    /* Supporting text below the note */
+    .panel > .note + p.subtle {
+      font-size: .92rem;
+      line-height: 1.72;
+      color: var(--muted);
+      max-width: 52ch;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body class="">
+  <div class="top-strip"></div>
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Uganda Veterans</strong>
+          <span>Affairs Management System</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a data-nav href="index.html">Home</a>
+        <a data-nav href="services.html">Services</a>
+        <a data-nav href="community.html">Community</a>
+        <a data-nav href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+<main class="section">
+
+    <section class="section">
+
+      <div class="container info-grid">
+
+          <div class="panel">
+
+              <span class="badge">
+                  Veteran Support
+              </span>
+
+              <h2 style="margin:15px 0;">
+                  Your Service to Uganda Will Always Be Valued
+              </h2>
+
+              <p class="subtle" style="line-height:1.8;">
+
+                  Your sacrifice, discipline and commitment helped protect
+                  our nation. Although military service may have ended,
+                  your contribution to Uganda remains an important part of
+                  our national history.
+
+              </p>
+
+              <p class="subtle" style="line-height:1.8; margin-top:20px;">
+
+                  This platform is intended to connect veterans with
+                  support groups, welfare initiatives and community
+                  programmes that can provide encouragement, guidance and
+                  companionship during life after service.
+
+              </p>
+
+          </div>
+
+          <div class="panel" style="padding:0; overflow:hidden;">
+
+              <img
+              src="assets/matchingupdf.jpg"
+              alt="UPDF Soldiers">
+
+          </div>
+
+      </div>
+
+    </section>
+
+    <section class="section">
+    
+        <div class="container">
+        
+            <div class="panel">
+            
+                <span class="badge">
+                    Available Communities
+                </span>
+              
+                <h2 style="margin:15px 0;">
+                    Veteran Support Communities
+                </h2>
+              
+                <div class="note" style="margin-top:25px;">
+                
+                    No registered veteran communities are currently available.
+                
+                </div>
+              
+                <p class="subtle" style="margin-top:20px;">
+                
+                    Once recognised veteran communities and support groups
+                    are registered with the system, they will appear here
+                    for veterans to join and participate in.
+                
+                </p>
+              
+            </div>
+          
+        </div>
+      
+    </section>
+</main>
+  <script>
+
+    if(!localStorage.getItem("vamsToken")){
+    
+        window.location="login.html";
+    
+    }
+
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>

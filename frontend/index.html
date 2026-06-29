@@ -1,0 +1,914 @@
+<!--
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uganda Veterans Affairs Management System</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="">
+  <div class="top-strip"></div>
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="#" id="homeLink">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Uganda Veterans</strong>
+          <span>Affairs Management System</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a data-nav href="index.html">Home</a>
+        <a data-nav href="services.html">Services</a>
+        <a data-nav href="community.html">Community</a>
+        <a data-nav href="resources.html">Resources</a>
+        <a data-nav href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+<main>
+
+    <section class="hero">
+      <div class="container hero-grid">
+        <article class="hero-card">
+          <div class="hero-overlay"></div>
+          <div class="content-layer hero-content">
+            <div class="kicker">🇺🇬 Service, dignity, and support for Ugandan veterans</div>
+            <h1>Honouring those who served with a secure digital welfare platform.</h1>
+            <p>
+              The Uganda Veterans Affairs Management System brings pension access, health-care coordination,
+              benefit tracking, community support, and reading materials into one trusted national platform.
+            </p>
+            <div class="hero-meta">
+              <div class="meta-box">
+                <strong>Fast</strong>
+                <span>Submit and track requests digitally</span>
+              </div>
+              <div class="meta-box">
+                <strong>Secure</strong>
+                <span>Document-based veteran verification</span>
+              </div>
+              <div class="meta-box">
+                <strong>Connected</strong>
+                <span>Support groups, forums, and resources</span>
+              </div>
+            </div>
+          </div>
+        </article>
+        <aside class="hero-side">
+          <div class="side-card side-photo">
+            <div>
+              <span class="badge">National service identity</span>
+              <h3>Built around Uganda's veteran care ecosystem</h3>
+              <p>Designed for the Ministry, UPDF-linked verification, and veteran support services.</p>
+            </div>
+          </div>
+          <div class="side-stats">
+            <div class="stat">
+              <div class="label">Core services</div>
+              <div class="value">04+</div>
+              <div class="subtle"></div>
+            </div>
+            <div class="stat">
+              <div class="label">Resources</div>
+              <div class="value">02+</div>
+              <div class="subtle"></div>
+            </div>
+            <div class="stat">
+              <div class="label">Support access</div>
+              <div class="value">24/7</div>
+              <div class="subtle"></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+
+          <div class="panel"
+          style="
+          text-align:center;
+          background:linear-gradient(135deg,#0b2d5b,#123f7a);
+          color:white;
+          padding:60px;">
+
+              <span class="badge"
+              style="background:rgba(255,255,255,.12);
+              color:white;">
+                  Veteran Registration
+              </span>
+
+              <h2 style="margin:20px 0;">
+                  Register Today and Access Veteran Services
+              </h2>
+
+              <p style="
+              max-width:700px;
+              margin:auto;
+              color:rgba(255,255,255,.9);
+              line-height:1.8;">
+
+                  Create your Veteran Affairs account to access pension
+                  services, healthcare support, welfare programmes,
+                  community groups, educational resources and other
+                  veteran benefits available through the Uganda Veterans
+                  Affairs Management System.
+
+              </p>
+
+              <div style="margin-top:35px;">
+
+                  <a href="register.html"
+                  class="cta-btn">
+
+                      Register as a Veteran
+
+                  </a>
+
+              </div>
+
+          </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <strong style="color:var(--text)">Uganda Veterans Affairs Management System</strong>
+        <div class="small">A front-end concept built with HTML, CSS, and JavaScript.</div>
+      </div>
+      <div class="small">© 2026 | National service and veteran welfare design concept</div>
+    </div>
+  </footer>
+  <script>
+
+    if(localStorage.getItem("vamsCurrentUser")){
+    
+        window.location = "dashboard.html";
+    
+    }
+
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uganda Veterans Affairs Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* ── INDEX-PAGE ONLY OVERRIDES ─────────────────────────────── */
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 10px;
+      transition: background .2s;
+      flex-shrink: 0;
+    }
+    .hamburger:hover { background: rgba(0,0,0,.06); }
+    .hamburger span {
+      display: block;
+      height: 2px;
+      background: var(--text);
+      border-radius: 4px;
+      transition: transform .3s ease, opacity .3s ease, width .3s ease;
+      transform-origin: center;
+    }
+    .hamburger span:nth-child(2) { width: 75%; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; width: 100%; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile nav drawer */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 49;
+    }
+    .mobile-nav.open { display: block; }
+    .mobile-nav-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(2px);
+      animation: fadeIn .25s ease;
+    }
+    .mobile-nav-drawer {
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: min(320px, 88vw);
+      background: var(--surface);
+      box-shadow: -8px 0 40px rgba(0,0,0,.18);
+      display: flex;
+      flex-direction: column;
+      padding: 32px 24px 40px;
+      animation: slideIn .28s cubic-bezier(.22,.61,.36,1);
+      overflow-y: auto;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); }
+      to   { transform: translateX(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .mobile-nav-close {
+      align-self: flex-end;
+      width: 38px; height: 38px;
+      border: none; background: var(--surface-2);
+      border-radius: 50%; cursor: pointer;
+      font-size: 1.2rem; display: grid; place-items: center;
+      margin-bottom: 28px;
+      transition: background .2s;
+    }
+    .mobile-nav-close:hover { background: var(--border); }
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mobile-nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--text);
+      transition: background .18s, color .18s;
+    }
+    .mobile-nav-links a:hover,
+    .mobile-nav-links a.active {
+      background: rgba(62,92,58,.08);
+      color: var(--primary);
+    }
+    .mobile-nav-links a .nav-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--surface-2);
+      display: grid; place-items: center;
+      flex-shrink: 0;
+    }
+    .mobile-nav-links a:hover .nav-icon,
+    .mobile-nav-links a.active .nav-icon {
+      background: rgba(62,92,58,.12);
+    }
+    .mobile-nav-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+    .mobile-cta-wrap {
+      margin-top: auto;
+      padding-top: 28px;
+    }
+    .mobile-cta-wrap .cta-btn {
+      display: block;
+      text-align: center;
+      padding: 15px 20px;
+      font-size: 1rem;
+    }
+
+    /* ── Hero ─────────────────────────────────────────────────── */
+    .hero { padding: 36px 0 10px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .hero-card {
+      border-radius: 32px;
+      overflow: hidden;
+      position: relative;
+      min-height: 560px;
+      background:
+        linear-gradient(120deg,
+          rgba(20,46,18,.94) 0%,
+          rgba(40,72,36,.80) 40%,
+          rgba(40,72,36,.30) 100%),
+        url("../assets/Gemini_Generated_Image_tlzezqtlzezqtlze.png") center / cover no-repeat;
+      color: #fff;
+      transition: box-shadow .3s ease;
+    }
+    .hero-card:hover { box-shadow: 0 28px 60px rgba(0,0,0,.16); }
+
+    .hero-content {
+      padding: 56px 52px 44px;
+      max-width: 660px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.13);
+      border: 1px solid rgba(255,255,255,.22);
+      font-weight: 600;
+      font-size: .82rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    .hero h1 {
+      margin: 20px 0 16px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.2rem, 4.5vw, 3.9rem);
+      line-height: 1.05;
+      letter-spacing: -.02em;
+      font-weight: 800;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      margin: 0;
+      max-width: 54ch;
+      color: rgba(255,255,255,.82);
+      line-height: 1.72;
+      font-size: 1rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    .hero-actions .cta-btn { padding: 14px 26px; font-size: .97rem; }
+    .hero-actions .ghost-btn {
+      padding: 14px 22px;
+      font-size: .97rem;
+      border-color: rgba(255,255,255,.32);
+      color: #fff;
+    }
+    .hero-actions .ghost-btn:hover {
+      background: rgba(255,255,255,.12);
+      color: #fff;
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 36px;
+    }
+    .meta-box {
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 18px;
+      padding: 16px 14px;
+      transition: background .2s;
+    }
+    .meta-box:hover { background: rgba(255,255,255,.16); }
+    .meta-box::before {
+      content: '';
+      display: block;
+      width: 24px; height: 3px;
+      border-radius: 2px;
+      background: var(--accent);
+      margin-bottom: 10px;
+    }
+    .meta-box strong { display: block; font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+    .meta-box span   { color: rgba(255,255,255,.72); font-size: .82rem; line-height: 1.4; }
+
+    /* ── Hero side ───────────────────────────────────────────── */
+    .hero-side { display: grid; gap: 16px; }
+
+    .side-card { border-radius: 28px; padding: 22px; overflow: hidden; }
+
+    .side-photo {
+      min-height: 248px;
+      background:
+        linear-gradient(180deg, rgba(4,10,20,.04) 0%, rgba(4,10,20,.55) 100%),
+        url("../assets/updf-ceremony.jpg") center / cover no-repeat;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .side-photo .badge {
+      background: rgba(200,166,70,.22);
+      color: var(--accent);
+      border: 1px solid rgba(200,166,70,.3);
+      margin-bottom: 10px;
+      width: fit-content;
+    }
+    .side-photo h3 { margin: 0 0 6px; font-size: 1.18rem; font-weight: 700; }
+    .side-photo p  { margin: 0; max-width: 30ch; color: rgba(255,255,255,.88); line-height: 1.55; font-size: .9rem; }
+
+    .side-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 14px;
+    }
+    .stat {
+      border-radius: 24px;
+      padding: 22px 18px;
+      background: rgba(255,255,255,.9);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 24px rgba(0,0,0,.05);
+      transition: transform .22s ease, box-shadow .22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(0,0,0,.1); }
+    .stat::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 0 0 24px 24px;
+    }
+    .stat .label {
+      color: var(--muted);
+      font-size: .8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .stat .value {
+      font-size: 2.1rem;
+      font-weight: 800;
+      margin: 8px 0 2px;
+      color: var(--primary);
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    /* ── CTA section ─────────────────────────────────────────── */
+    .cta-section { padding: 12px 0 80px; }
+
+    .cta-panel {
+      border-radius: 32px;
+      overflow: hidden;
+      position: relative;
+      padding: 72px 60px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(62,92,58,.18) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 50%, rgba(200,166,70,.12) 0%, transparent 55%),
+        linear-gradient(135deg, #0e2d10 0%, #142e16 50%, #0b2409 100%);
+      color: #fff;
+    }
+    .cta-ring {
+      position: absolute;
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.06);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .cta-ring:nth-child(2) { width: 680px; height: 680px; border-color: rgba(255,255,255,.035); }
+
+    .cta-inner { position: relative; z-index: 1; }
+
+    .cta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(200,166,70,.18);
+      border: 1px solid rgba(200,166,70,.28);
+      color: var(--accent);
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .cta-panel h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.9rem);
+      font-weight: 800;
+      margin: 0 0 20px;
+      line-height: 1.12;
+      letter-spacing: -.02em;
+    }
+    .cta-panel h2 em { font-style: normal; color: var(--accent); }
+
+    .cta-panel p {
+      max-width: 620px;
+      margin: 0 auto 36px;
+      color: rgba(255,255,255,.78);
+      line-height: 1.75;
+      font-size: 1.02rem;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .cta-actions .cta-btn {
+      background: linear-gradient(135deg, var(--accent), #b8901a);
+      color: #0e2d10;
+      font-weight: 800;
+      padding: 15px 32px;
+      font-size: 1rem;
+      box-shadow: 0 8px 28px rgba(200,166,70,.4);
+    }
+    .cta-actions .cta-btn:hover {
+      box-shadow: 0 14px 36px rgba(200,166,70,.5);
+      transform: translateY(-2px);
+    }
+    .cta-actions .ghost-btn {
+      color: rgba(255,255,255,.88);
+      border-color: rgba(255,255,255,.28);
+      padding: 15px 28px;
+      font-size: 1rem;
+    }
+    .cta-actions .ghost-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+    .cta-trust {
+      margin-top: 28px;
+      color: rgba(255,255,255,.46);
+      font-size: .82rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    .footer { margin-top: 0; padding: 32px 0 44px; border-top: 1px solid var(--border); }
+    .footer-grid { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .footer-brand strong { color: var(--text); font-size: .97rem; display: block; margin-bottom: 4px; }
+    .footer-brand .small { color: var(--muted); }
+    .footer-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: .85rem; color: var(--muted); font-weight: 500; transition: color .18s; }
+    .footer-links a:hover { color: var(--primary); }
+    .footer-copy { font-size: .82rem; color: var(--muted); }
+
+    /* ── Page-load fade-in ───────────────────────────────────── */
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero        { animation: pageIn .55s ease both; }
+    .cta-section { animation: pageIn .55s ease .1s both; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .hero-grid    { grid-template-columns: 1fr; }
+      .hero-card    { min-height: 520px; }
+      .hero-content { padding: 48px 42px 38px; }
+      .cta-panel    { padding: 56px 40px; }
+    }
+
+    @media (max-width: 720px) {
+      .hamburger  { display: flex; }
+      .nav-links  { display: none !important; }
+      .hero       { padding: 20px 0 8px; }
+      .hero-content { padding: 30px 24px 28px; }
+      .hero-meta  { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .side-stats { grid-template-columns: 1fr 1fr; }
+      .cta-panel  { padding: 48px 24px; border-radius: 24px; }
+      .cta-section { padding: 8px 0 56px; }
+      .footer-right { align-items: flex-start; }
+      .footer-links { flex-wrap: wrap; gap: 14px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-meta { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero, .cta-section { animation: none; }
+      * { transition-duration: 0ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Uganda flag top strip -->
+  <div class="top-strip"></div>
+
+  <!-- ── NAVBAR ─────────────────────────────────────────────────── -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="#" id="homeLink">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Uganda Veterans</strong>
+          <span>Affairs Management System</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a data-nav href="index.html" class="active">Home</a>
+        <a data-nav href="services.html">Services</a>
+        <a data-nav href="community.html">Community</a>
+        <a data-nav href="resources.html">Resources</a>
+        <a data-nav href="login.html">Login</a>
+      </nav>
+
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── MOBILE DRAWER ─────────────────────────────────────────── -->
+  <div class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <div class="mobile-nav-backdrop" id="mobileBackdrop"></div>
+    <div class="mobile-nav-drawer">
+      <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close navigation menu">&#x2715;</button>
+
+      <nav class="mobile-nav-links" aria-label="Mobile navigation">
+        <a data-nav href="index.html" class="active">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </span>
+          Home
+        </a>
+        <a data-nav href="services.html">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </span>
+          Services
+        </a>
+        <a data-nav href="community.html">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </span>
+          Community
+        </a>
+        <a data-nav href="resources.html">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </span>
+          Resources
+        </a>
+
+        <div class="mobile-nav-divider"></div>
+
+        <a data-nav href="login.html">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+          </span>
+          Login
+        </a>
+      </nav>
+
+      <div class="mobile-cta-wrap">
+        <a href="register.html" class="cta-btn">Register as a Veteran</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN ──────────────────────────────────────────────────── -->
+  <main>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+
+        <article class="hero-card">
+          <div class="hero-overlay"></div>
+          <div class="content-layer hero-content">
+
+            <div class="kicker">&#x1F1FA;&#x1F1EC; Service &middot; Dignity &middot; Support</div>
+
+            <h1>Honouring those who <em>served</em> Uganda.</h1>
+
+            <p class="hero-desc">
+              The Uganda Veterans Affairs Management System brings pension access,
+              healthcare coordination, benefit tracking, community support, and
+              educational resources into one trusted national platform.
+            </p>
+
+            <div class="hero-actions">
+              <a href="register.html" class="cta-btn">Register Now</a>
+              <a href="login.html"    class="ghost-btn">Sign In</a>
+            </div>
+
+            <div class="hero-meta">
+              <div class="meta-box">
+                <strong>Fast</strong>
+                <span>Submit and track requests digitally</span>
+              </div>
+              <div class="meta-box">
+                <strong>Secure</strong>
+                <span>Document-based veteran verification</span>
+              </div>
+              <div class="meta-box">
+                <strong>Connected</strong>
+                <span>Support groups, forums, and resources</span>
+              </div>
+            </div>
+
+          </div>
+        </article>
+
+        <aside class="hero-side">
+          <div class="side-card side-photo">
+            <div>
+              <span class="badge">National service identity</span>
+              <h3>Built around Uganda's veteran care ecosystem</h3>
+              <p>Designed for the Ministry, UPDF-linked verification, and veteran support services.</p>
+            </div>
+          </div>
+
+          <div class="side-stats">
+            <div class="stat">
+              <div class="label">Core Services</div>
+              <div class="value">04+</div>
+            </div>
+            <div class="stat">
+              <div class="label">Resources</div>
+              <div class="value">02+</div>
+            </div>
+            <div class="stat">
+              <div class="label">Support Access</div>
+              <div class="value">24/7</div>
+            </div>
+            <div class="stat">
+              <div class="label">Platform</div>
+              <div class="value">Free</div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-panel">
+          <div class="cta-ring"></div>
+          <div class="cta-ring"></div>
+
+          <div class="cta-inner">
+            <div class="cta-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z"/>
+              </svg>
+              Veteran Registration
+            </div>
+
+            <h2>Register today and access<br><em>veteran services</em></h2>
+
+            <p>
+              Create your Veteran Affairs account to access pension services,
+              healthcare support, welfare programmes, community groups,
+              educational resources, and all other benefits available through
+              the Uganda Veterans Affairs Management System.
+            </p>
+
+            <div class="cta-actions">
+              <a href="register.html" class="cta-btn">Register as a Veteran</a>
+              <a href="login.html"    class="ghost-btn">Already have an account?</a>
+            </div>
+
+            <div class="cta-trust">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.6">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              Secure &middot; Government-verified &middot; Free to use
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <strong>Uganda Veterans Affairs Management System</strong>
+        <div class="small">A national platform for veteran welfare and support.</div>
+      </div>
+      <div class="footer-right">
+        <div class="footer-links">
+          <a href="services.html">Services</a>
+          <a href="community.html">Community</a>
+          <a href="resources.html">Resources</a>
+          <a href="login.html">Login</a>
+        </div>
+        <div class="footer-copy">&copy; 2026 Uganda Veterans Affairs Management System</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Redirect if already logged in -->
+  <script>
+    if (localStorage.getItem("vamsCurrentUser")) {
+      window.location = "dashboard.html";
+    }
+  </script>
+
+  <script src="js/app.js"></script>
+
+  <!-- Hamburger / mobile nav -->
+  <script>
+    (function () {
+      var btn      = document.getElementById('hamburgerBtn');
+      var nav      = document.getElementById('mobileNav');
+      var closeBtn = document.getElementById('mobileNavClose');
+      var backdrop = document.getElementById('mobileBackdrop');
+
+      function openNav() {
+        nav.classList.add('open');
+        btn.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeNav() {
+        nav.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      btn.addEventListener('click', openNav);
+      closeBtn.addEventListener('click', closeNav);
+      backdrop.addEventListener('click', closeNav);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeNav();
+      });
+    })();
+  </script>
+
+</body>
+</html>

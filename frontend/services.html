@@ -1,0 +1,930 @@
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services | Uganda Veterans Affairs Management System</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="">
+  <div class="top-strip"></div>
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Veterans</strong>
+          <span>Affairs Management System</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a data-nav href="index.html">Home</a>
+        <a data-nav href="services.html">Services</a>
+        <a data-nav href="community.html">Community</a>
+        <a data-nav href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+<main class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Official Veteran Services</h2>
+            <p>
+            Access official services provided by the Ministry of Defence and Veteran Affairs.
+            Select a service below to continue to the appropriate government website.
+            </p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+
+        <article class="feature">
+          <div class="icon">🏥</div>
+        
+          <h3>Veteran Healthcare</h3>
+        
+          <p>
+            Access information on military healthcare services and treatment
+            available to UPDF veterans.
+          </p>
+        
+          <br>
+        
+          <a class="cta-btn"
+             href="https://www.updf.go.ug/welfare/veteran-affairs/"
+             target="_blank"
+             rel="noopener noreferrer">
+        
+             Open Official Service
+        
+          </a>
+        
+        </article>
+      
+        <article class="feature">
+        
+          <div class="icon">💰</div>
+        
+          <h3>Military Pensions</h3>
+        
+          <p>
+            Access pension, gratuity and veteran pension support through the
+            Directorate of Veteran Affairs.
+          </p>
+        
+          <br>
+        
+          <a class="cta-btn"
+             href="https://www.defence.go.ug/welfare/updf-veteran-affairs/"
+             target="_blank"
+             rel="noopener noreferrer">
+        
+             Open Official Service
+        
+          </a>
+        
+        </article>
+      
+        <article class="feature">
+        
+          <div class="icon">🧾</div>
+        
+          <h3>Veteran Welfare & Benefits</h3>
+        
+          <p>
+            Learn about rehabilitation, livelihood programmes and other welfare
+            services offered to veterans.
+          </p>
+        
+          <br>
+        
+          <a class="cta-btn"
+             href="https://www.defence.go.ug/welfare/"
+             target="_blank"
+             rel="noopener noreferrer">
+        
+             Open Official Service
+        
+          </a>
+        
+        </article>
+
+      </div>
+
+      <div class="info-grid" style="margin-top:18px">
+        <section class="panel">
+          <span class="badge">Service journey</span>
+          <h2 style="margin:14px 0 10px">A clear workflow from request to resolution</h2>
+          <div class="list">
+            <div class="timeline-item">
+              <div class="timeline-date">01<span>Start</span></div>
+              <div><h4>Choose a service</h4><p>Select pension, health-care, or another welfare support request.</p></div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-date">02<span>Submit</span></div>
+              <div><h4>Attach details</h4><p>Enter your case information and include documents where required.</p></div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-date">03<span>Track</span></div>
+              <div><h4>Monitor progress</h4><p>See whether the request is pending, in review, approved, or completed.</p></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script>
+
+    if(!localStorage.getItem("vamsToken")){
+    
+        window.location="login.html";
+    
+    }
+
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
+
+-->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services | Uganda Veterans Affairs Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* ── SERVICES PAGE STYLES ──────────────────────────────────── */
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px; height: 40px;
+      border: none; background: transparent;
+      cursor: pointer; padding: 4px;
+      border-radius: 10px;
+      transition: background .2s;
+      flex-shrink: 0;
+    }
+    .hamburger:hover { background: rgba(0,0,0,.06); }
+    .hamburger span {
+      display: block; height: 2px;
+      background: var(--text); border-radius: 4px;
+      transition: transform .3s ease, opacity .3s ease, width .3s ease;
+      transform-origin: center;
+    }
+    .hamburger span:nth-child(2) { width: 75%; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; width: 100%; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile nav drawer */
+    .mobile-nav { display: none; position: fixed; inset: 0; z-index: 49; }
+    .mobile-nav.open { display: block; }
+    .mobile-nav-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(2px);
+      animation: fadeIn .25s ease;
+    }
+    .mobile-nav-drawer {
+      position: absolute; top: 0; right: 0; bottom: 0;
+      width: min(320px, 88vw);
+      background: var(--surface);
+      box-shadow: -8px 0 40px rgba(0,0,0,.18);
+      display: flex; flex-direction: column;
+      padding: 32px 24px 40px;
+      animation: slideIn .28s cubic-bezier(.22,.61,.36,1);
+      overflow-y: auto;
+    }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+    .mobile-nav-close {
+      align-self: flex-end; width: 38px; height: 38px;
+      border: none; background: var(--surface-2);
+      border-radius: 50%; cursor: pointer;
+      font-size: 1.2rem; display: grid; place-items: center;
+      margin-bottom: 28px; transition: background .2s;
+    }
+    .mobile-nav-close:hover { background: var(--border); }
+    .mobile-nav-links { display: flex; flex-direction: column; gap: 4px; }
+    .mobile-nav-links a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; border-radius: 16px;
+      font-weight: 600; font-size: 1.05rem; color: var(--text);
+      transition: background .18s, color .18s;
+    }
+    .mobile-nav-links a:hover, .mobile-nav-links a.active {
+      background: rgba(62,92,58,.08); color: var(--primary);
+    }
+    .mobile-nav-links a .nav-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--surface-2); display: grid; place-items: center; flex-shrink: 0;
+    }
+    .mobile-nav-links a:hover .nav-icon, .mobile-nav-links a.active .nav-icon {
+      background: rgba(62,92,58,.12);
+    }
+    .mobile-nav-divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .mobile-cta-wrap { margin-top: auto; padding-top: 28px; }
+    .mobile-cta-wrap .cta-btn { display: block; text-align: center; padding: 15px 20px; font-size: 1rem; }
+
+    /* ── Page layout ─────────────────────────────────────────── */
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+
+    .page-wrap {
+      padding: 52px 0 88px;
+      animation: pageIn .5s ease both;
+    }
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Page header ─────────────────────────────────────────── */
+    .page-header {
+      margin-bottom: 44px;
+    }
+    .page-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 999px;
+      background: rgba(62,92,58,.09);
+      border: 1px solid rgba(62,92,58,.16);
+      color: var(--primary);
+      font-size: .78rem; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.08;
+      margin: 0 0 14px;
+      color: var(--text);
+    }
+    .page-header h1 em { font-style: normal; color: var(--primary); }
+    .page-header p {
+      max-width: 58ch;
+      color: var(--muted);
+      line-height: 1.72;
+      font-size: 1.02rem;
+      margin: 0;
+    }
+
+    /* ── Service cards ───────────────────────────────────────── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 30px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,.05);
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .3s ease;
+      border-radius: 28px 28px 0 0;
+    }
+    .service-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,.11); border-color: rgba(62,92,58,.22); }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-icon-wrap {
+      width: 56px; height: 56px;
+      border-radius: 18px;
+      display: grid; place-items: center;
+      margin-bottom: 20px;
+      flex-shrink: 0;
+    }
+    .service-icon-wrap svg { width: 26px; height: 26px; }
+    .service-icon-wrap.green  { background: rgba(62,92,58,.10); color: var(--primary); }
+    .service-icon-wrap.gold   { background: rgba(200,166,70,.12); color: #9a7a10; }
+    .service-icon-wrap.blue   { background: rgba(18,63,122,.09); color: #123f7a; }
+
+    .service-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .service-tag::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .service-card h3 {
+      margin: 0 0 12px;
+      font-size: 1.18rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    .service-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.68;
+      font-size: .95rem;
+      flex: 1;
+    }
+
+    .service-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 22px 0 20px;
+    }
+
+    .service-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--primary);
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: rgba(62,92,58,.08);
+      border: 1px solid rgba(62,92,58,.12);
+      transition: background .2s, gap .2s;
+      text-decoration: none;
+      width: fit-content;
+    }
+    .service-link:hover {
+      background: rgba(62,92,58,.14);
+      gap: 12px;
+    }
+    .service-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ── How it works ────────────────────────────────────────── */
+    .workflow-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .workflow-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.05);
+    }
+
+    .panel-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: .76rem; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--primary);
+      background: rgba(62,92,58,.08);
+      border: 1px solid rgba(62,92,58,.14);
+      padding: 5px 12px; border-radius: 999px;
+      margin-bottom: 18px;
+    }
+
+    .workflow-panel h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      font-weight: 800;
+      margin: 0 0 28px;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      color: var(--text);
+    }
+
+    .workflow-steps { display: grid; gap: 0; }
+
+    .workflow-step {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      transition: background .2s;
+    }
+    .workflow-step:last-child { border-bottom: none; padding-bottom: 0; }
+    .workflow-step:first-child { padding-top: 0; }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      display: grid; place-items: center;
+      font-weight: 800;
+      font-size: .88rem;
+      letter-spacing: .02em;
+    }
+    .step-num.s1 { background: rgba(62,92,58,.10); color: var(--primary); }
+    .step-num.s2 { background: rgba(200,166,70,.12); color: #9a7a10; }
+    .step-num.s3 { background: rgba(18,63,122,.09); color: #123f7a; }
+
+    .step-body h4 {
+      margin: 0 0 5px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .step-body p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.65;
+    }
+
+    /* ── Info panel ──────────────────────────────────────────── */
+    .info-panel {
+      background:
+        radial-gradient(ellipse at top left, rgba(62,92,58,.12) 0%, transparent 55%),
+        radial-gradient(ellipse at bottom right, rgba(200,166,70,.09) 0%, transparent 50%),
+        var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.05);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .info-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .info-stat {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .info-stat::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 0 0 18px 18px;
+    }
+    .info-stat .stat-label {
+      font-size: .76rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .info-stat .stat-val {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.9rem; font-weight: 800;
+      color: var(--primary); line-height: 1;
+    }
+
+    .info-note {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 18px 16px;
+      background: rgba(62,92,58,.06);
+      border: 1px solid rgba(62,92,58,.12);
+      border-radius: 18px;
+    }
+    .info-note-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border-radius: 10px;
+      background: rgba(62,92,58,.12);
+      color: var(--primary);
+      display: grid; place-items: center;
+    }
+    .info-note-icon svg { width: 18px; height: 18px; }
+    .info-note p { margin: 0; font-size: .9rem; color: var(--muted); line-height: 1.65; }
+    .info-note strong { color: var(--text); display: block; margin-bottom: 4px; font-size: .95rem; }
+
+    .login-prompt {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 20px 20px;
+      background: linear-gradient(135deg, #0e2d10, #142e16);
+      border-radius: 18px;
+      color: #fff;
+      flex-wrap: wrap;
+    }
+    .login-prompt p { margin: 0; font-size: .92rem; color: rgba(255,255,255,.78); line-height: 1.5; }
+    .login-prompt strong { color: #fff; display: block; font-size: 1rem; margin-bottom: 2px; }
+    .login-prompt .cta-btn {
+      background: linear-gradient(135deg, var(--accent), #b8901a);
+      color: #0e2d10; font-weight: 800;
+      padding: 11px 22px; font-size: .9rem;
+      white-space: nowrap; flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(200,166,70,.35);
+    }
+    .login-prompt .cta-btn:hover { box-shadow: 0 8px 24px rgba(200,166,70,.5); transform: translateY(-1px); }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    .footer { margin-top: 0; padding: 32px 0 44px; border-top: 1px solid var(--border); }
+    .footer-grid { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .footer-brand strong { color: var(--text); font-size: .97rem; display: block; margin-bottom: 4px; }
+    .footer-brand .small { color: var(--muted); }
+    .footer-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: .85rem; color: var(--muted); font-weight: 500; transition: color .18s; }
+    .footer-links a:hover { color: var(--primary); }
+    .footer-copy { font-size: .82rem; color: var(--muted); }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 1000px) {
+      .services-grid   { grid-template-columns: 1fr 1fr; }
+      .workflow-section { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .hamburger { display: flex; }
+      .nav-links { display: none !important; }
+      .page-wrap { padding: 36px 0 64px; }
+      .services-grid { grid-template-columns: 1fr; gap: 16px; }
+      .workflow-panel, .info-panel { padding: 28px 22px; }
+      .info-stat-grid { grid-template-columns: 1fr 1fr; }
+      .footer-right { align-items: flex-start; }
+      .footer-links { flex-wrap: wrap; gap: 14px; }
+    }
+    @media (max-width: 480px) {
+      .info-stat-grid { grid-template-columns: 1fr; }
+      .login-prompt { flex-direction: column; align-items: flex-start; }
+      .login-prompt .cta-btn { width: 100%; text-align: center; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .page-wrap { animation: none; }
+      * { transition-duration: 0ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-strip"></div>
+
+  <!-- ── NAVBAR ─────────────────────────────────────────────────── -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="index.html" id="homeLink">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Uganda Veterans</strong>
+          <span>Affairs Management System</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation"></nav>
+
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── MOBILE DRAWER ─────────────────────────────────────────── -->
+  <div class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <div class="mobile-nav-backdrop" id="mobileBackdrop"></div>
+    <div class="mobile-nav-drawer">
+      <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close navigation menu">&#x2715;</button>
+      <nav class="mobile-nav-links" aria-label="Mobile navigation">
+        <a data-nav href="index.html">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </span>Home
+        </a>
+        <a data-nav href="services.html" class="active">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </span>Services
+        </a>
+        <a data-nav href="community.html">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </span>Community
+        </a>
+        <a data-nav href="resources.html">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </span>Resources
+        </a>
+        <div class="mobile-nav-divider"></div>
+        <a data-nav href="login.html">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+          </span>Login
+        </a>
+      </nav>
+      <div class="mobile-cta-wrap">
+        <a href="register.html" class="cta-btn">Register as a Veteran</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN ──────────────────────────────────────────────────── -->
+  <main>
+    <div class="page-wrap">
+      <div class="container">
+
+        <!-- Page header -->
+        <header class="page-header">
+          <div class="page-eyebrow">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z"/>
+            </svg>
+            Ministry of Defence &amp; Veteran Affairs
+          </div>
+          <h1>Official <em>Veteran Services</em></h1>
+          <p>
+            Access official services provided by the Ministry of Defence and Veteran Affairs.
+            Select a service below to continue to the appropriate government portal.
+          </p>
+        </header>
+
+        <!-- Service cards -->
+        <div class="services-grid">
+
+          <article class="service-card">
+            <div class="service-icon-wrap green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+              </svg>
+            </div>
+            <div class="service-tag">Health &amp; Medical</div>
+            <h3>Veteran Healthcare</h3>
+            <p>
+              Access information on military healthcare services and treatment
+              available to UPDF veterans through authorised medical facilities.
+            </p>
+            <div class="service-divider"></div>
+            <a class="service-link"
+               href="https://www.updf.go.ug/welfare/veteran-affairs/"
+               target="_blank"
+               rel="noopener noreferrer">
+              Open Official Portal
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </a>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon-wrap gold">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+            </div>
+            <div class="service-tag">Financial &amp; Pension</div>
+            <h3>Military Pensions</h3>
+            <p>
+              Access pension, gratuity, and veteran pension support through the
+              Directorate of Veteran Affairs and the Ministry of Defence.
+            </p>
+            <div class="service-divider"></div>
+            <a class="service-link"
+               href="https://www.defence.go.ug/welfare/updf-veteran-affairs/"
+               target="_blank"
+               rel="noopener noreferrer">
+              Open Official Portal
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </a>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon-wrap blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <div class="service-tag">Welfare &amp; Benefits</div>
+            <h3>Veteran Welfare &amp; Benefits</h3>
+            <p>
+              Learn about rehabilitation, livelihood programmes, and other welfare
+              services offered to veterans and their dependants.
+            </p>
+            <div class="service-divider"></div>
+            <a class="service-link"
+               href="https://www.defence.go.ug/welfare/"
+               target="_blank"
+               rel="noopener noreferrer">
+              Open Official Portal
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </a>
+          </article>
+
+        </div>
+
+        <!-- Workflow + info panel -->
+        <div class="workflow-section">
+
+          <!-- How it works -->
+          <div class="workflow-panel">
+            <div class="panel-eyebrow">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+              Service journey
+            </div>
+            <h2>A clear path from request to resolution</h2>
+
+            <div class="workflow-steps">
+              <div class="workflow-step">
+                <div class="step-num s1">01</div>
+                <div class="step-body">
+                  <h4>Choose a service</h4>
+                  <p>Select pension, healthcare, or another welfare support request from the options above.</p>
+                </div>
+              </div>
+              <div class="workflow-step">
+                <div class="step-num s2">02</div>
+                <div class="step-body">
+                  <h4>Submit your details</h4>
+                  <p>Enter your case information and attach supporting documents where required by the portal.</p>
+                </div>
+              </div>
+              <div class="workflow-step">
+                <div class="step-num s3">03</div>
+                <div class="step-body">
+                  <h4>Monitor progress</h4>
+                  <p>Track your request status — pending, in review, approved, or completed — from your dashboard.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+<!--
+          
+          <div class="info-panel">
+            <div>
+              <div class="panel-eyebrow">Platform overview</div>
+              <div class="info-stat-grid">
+                <div class="info-stat">
+                  <div class="stat-label">Core Services</div>
+                  <div class="stat-val">04+</div>
+                </div>
+                <div class="info-stat">
+                  <div class="stat-label">Support Access</div>
+                  <div class="stat-val">24/7</div>
+                </div>
+                <div class="info-stat">
+                  <div class="stat-label">Platform Cost</div>
+                  <div class="stat-val">Free</div>
+                </div>
+                <div class="info-stat">
+                  <div class="stat-label">Resources</div>
+                  <div class="stat-val">02+</div>
+                </div>
+              </div>
+            </div>
+-->
+            <div class="info-note">
+              <div class="info-note-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+              </div>
+              <div>
+                <strong>Official portals only</strong>
+                <p>All service links open verified government websites operated by the Ministry of Defence and Veteran Affairs.</p>
+              </div>
+            </div>
+<!--
+            <div class="login-prompt">
+              <div>
+                <strong>Need to track a request?</strong>
+                <p>Sign in to your account to view submitted requests and check their current status.</p>
+              </div>
+              <a href="login.html" class="cta-btn">Sign In</a>
+            </div>
+-->
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ── FOOTER ────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <strong>Uganda Veterans Affairs Management System</strong>
+        <div class="small">A national platform for veteran welfare and support.</div>
+      </div>
+      <div class="footer-right">
+        <div class="footer-links">
+          <a href="services.html">Services</a>
+          <a href="community.html">Community</a>
+          <a href="resources.html">Resources</a>
+          <a href="login.html">Login</a>
+        </div>
+        <div class="footer-copy">&copy; 2026 Uganda Veterans Affairs Management System</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Auth guard — preserve original logic exactly -->
+  <script>
+    if (!localStorage.getItem("vamsToken")) {
+      window.location = "login.html";
+    }
+  </script>
+
+  <script src="js/app.js"></script>
+
+  <!-- Hamburger / mobile nav -->
+  <script>
+    (function () {
+      var btn      = document.getElementById('hamburgerBtn');
+      var nav      = document.getElementById('mobileNav');
+      var closeBtn = document.getElementById('mobileNavClose');
+      var backdrop = document.getElementById('mobileBackdrop');
+
+      function openNav() {
+        nav.classList.add('open');
+        btn.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeNav() {
+        nav.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      btn.addEventListener('click', openNav);
+      closeBtn.addEventListener('click', closeNav);
+      backdrop.addEventListener('click', closeNav);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeNav();
+      });
+    })();
+  </script>
+
+</body>
+</html>

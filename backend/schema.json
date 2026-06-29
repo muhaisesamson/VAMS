@@ -1,0 +1,19 @@
+{
+  "name": "Uganda Veterans Affairs Management System",
+  "entities": {
+    "Veteran": {
+      "fields": [
+        "fullName",
+        "nin",
+        "serviceNumber",
+        "phone",
+        "email",
+        "serviceBranch",
+        "yearsServed",
+        "status",
+        "documents",
+        "passwordHash"
+      ]
+    }
+  }
+}

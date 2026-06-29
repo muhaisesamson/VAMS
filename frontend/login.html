@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Uganda Veterans Affairs Management System</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="">
+  <div class="top-strip"></div>
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Uganda Veterans</strong>
+          <span>Affairs Management System</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a data-nav href="index.html">Home</a>
+        <a data-nav href="services.html">Services</a>
+        <a data-nav href="community.html">Community</a>
+        <a data-nav href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+<main class="section">
+    <div class="container forms">
+      <section class="form-card">
+        <span class="badge">Account access</span>
+        <h1 style="margin:14px 0 10px">Login to your veteran account</h1>
+        <p class="subtle" style="line-height:1.7">Use your National ID, service number, or registered email address.</p>
+        <form id="loginForm" style="margin-top:18px; display:grid; gap:14px">
+          <div class="field full">
+            <label for="loginId">National ID / Service Number / Email</label>
+            <input id="loginId" type="text" placeholder="UG-XXXXXXXXXX or UPDF-001" />
+          </div>
+          <div class="field full">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" placeholder="Your account password" />
+          </div>
+          <div id="loginMessage" class="note" style="display:none"></div>
+          <button class="cta-btn" type="submit">Login</button>
+          <button id="useDemoAccount" class="soft-btn" type="button">Fill demo account</button>
+        </form>
+      </section>
+      <aside class="form-card" style="background:linear-gradient(180deg, rgba(11,45,91,.96), rgba(11,45,91,.84)); color:#fff;">
+        <span class="badge" style="background:rgba(255,255,255,.12); color:#fff;">Secure access</span>
+        <h2 style="margin:14px 0 10px">Protecting benefits through verified identity.</h2>
+        <p style="line-height:1.7; color:rgba(255,255,255,.88)">
+          Verified login protects pension, health-care, and welfare data from misuse.
+          The same account can later be used to track requests, appointments, and messages.
+        </p>
+        <hr class="sep" style="border-top-color:rgba(255,255,255,.12)" />
+        <div class="list">
+          <div class="list-item" style="background:rgba(255,255,255,.08)"><div><strong>Existing users</strong><div style="color:rgba(255,255,255,.82)">Log in after your record is approved.</div></div></div>
+          <div class="list-item" style="background:rgba(255,255,255,.08)"><div><strong>New users</strong><div style="color:rgba(255,255,255,.82)">Register first, then await verification.</div></div></div>
+        </div>
+        <div style="margin-top:18px"><a class="ghost-btn" href="register.html" style="color:#fff;border-color:rgba(255,255,255,.24)">Go to registration</a></div>
+      </aside>
+    </div>
+  </main>
+  <script src="js/app.js"></script>
+</body>
+</html>

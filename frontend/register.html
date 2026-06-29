@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | Uganda Veterans Affairs Management System</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="">
+  <div class="top-strip"></div>
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Uganda Veterans</strong>
+          <span>Affairs Management System</span>
+        </div>
+      </a>
+      <nav class="nav-links"> 
+        <a data-nav href="register.html">Register</a>
+      </nav>
+    </div>
+  </header>
+<main class="section">
+    <div class="container">
+      <div class="mini-banner">
+        <div>
+          <h3>Veteran registration and verification</h3>
+          <p>Provide your details and upload documents required for proof of service.</p>
+        </div>
+        <span class="badge">Uganda • Ministry service portal</span>
+      </div>
+
+      <div class="forms" style="margin-top:18px">
+        <section class="form-card">
+          <span class="badge">Personal details</span>
+          <h1 style="margin:14px 0 10px">Create your account</h1>
+          <form id="registerForm" style="margin-top:18px; display:grid; gap:16px">
+            <div class="form-grid">
+              <div class="field">
+                  <label for="firstName">First Name</label>
+                  <input id="firstName" type="text" placeholder="e.g. John" />
+              </div>
+
+              <div class="field">
+                  <label for="lastName">Last Name</label>
+                  <input id="lastName" type="text" placeholder="e.g. Doe" />
+              </div>
+              <div class="field">
+                  <label for="gender">Gender</label>
+                  <select id="gender">
+                      <option value="">Select Gender</option>
+                      <option>Male</option>
+                      <option>Female</option>
+                  </select>
+              </div>
+              <div class="field">
+                  <label for="dateOfBirth">Date of Birth</label>
+                  <input id="dateOfBirth" type="date" />
+              </div>
+              <div class="field">
+                <label for="nin">National ID number</label>
+                <input id="nin" type="text" placeholder="CMXXXXXXXXXXXXXX" />
+              </div>
+              <div class="field">
+                <label for="serviceNumber">Service number</label>
+                <input id="serviceNumber" type="text" placeholder="e.g. RA123456" />
+              </div>
+              <div class="field">
+                <label for="serviceBranch">Branch of service</label>
+                <select id="serviceBranch">
+                  <option value="">Select branch</option>
+                  <option>Land Force</option>
+                  <option>Air Force</option>
+                  <option>Special Forces</option>
+                  <option>Reserve Force</option>
+                  <option>Other / Allied Service</option>
+                </select>
+              </div>
+              <div class="field">
+                  <label for="rank">Rank at Retirement / Discharge</label>
+                  <input
+                      id="rank"
+                      type="text"
+                      placeholder="e.g. Captain, Major, Sergeant"
+                  />
+              </div>
+              <div class="field">
+                <label for="phone">Phone number</label>
+                <input id="phone" type="tel" placeholder="+256..." />
+              </div>
+              <div class="field">
+                <label for="email">Email address</label>
+                <input id="email" type="email" placeholder="name@example.com" />
+              </div>
+              <div class="field">
+                <label for="yearsServed">Years of Service</label>
+                <input id="yearsServed" type="number" min="1" placeholder="e.g. 10" />
+              </div>
+              <div class="field">
+                <label for="password">Create password</label>
+                <input id="password" type="password" placeholder="Minimum 8 characters" />
+              </div>
+            </div>
+            <div id="registerMessage" class="note" style="display:none"></div>
+            <button class="cta-btn" type="submit">Submit registration</button>
+          </form>
+        </section>
+
+        <aside class="form-card">
+          <span class="badge">Document upload</span>
+          <h2 style="margin:14px 0 10px">Upload your proof of veteran status</h2>
+          <p class="subtle" style="line-height:1.7">Use clear, legible files for smooth verification by the relevant authority.</p>
+          <div class="upload-list">
+            <div class="upload-card">
+              <label for="nationalId">National ID</label>
+              <input id="nationalId" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+              <div class="help">Government identity document for primary verification.</div>
+            </div>
+            <div class="upload-card">
+              <label for="armyId">Army ID / Service ID</label>
+              <input id="armyId" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+              <div class="help">Confirms service identity and personnel record.</div>
+            </div>
+            <div class="upload-card">
+              <label for="dischargeCertificate">Discharge / retirement certificate</label>
+              <input id="dischargeCertificate" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+              <div class="help">Helps establish service completion or retirement status.</div>
+            </div>
+            <div class="upload-card">
+              <label for="supportingDocs">Supporting documents</label>
+              <input id="supportingDocs" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple />
+              <div class="help">Optional: pension papers, medical letters, or award records.</div>
+            </div>
+          </div>
+          <hr class="sep" />
+          <div class="note">After submission, the account remains pending until verification is completed.</div>
+        </aside>
+      </div>
+    </div>
+  </main>
+  <script src="js/app.js"></script>
+</body>
+</html>
