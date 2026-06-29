@@ -221,13 +221,38 @@ function loginHandlers() {
         btn.textContent = "Logging in...";
 
         try {
-            const response = await fetch(`${BASE_URL}/api/auth/login`, {
+            const loginUrl = `${BASE_URL}/api/auth/login`;
+            const payload = { email: emailInput, password };
+
+            console.group("LOGIN REQUEST");
+            console.log("➡️ Final URL:", loginUrl);
+            console.log("➡️ Payload (sanitized):", { email: emailInput, password: "<REDACTED>" });
+            console.log("➡️ Raw payload sent:", payload);
+            console.log("➡️ Request start:", new Date().toISOString());
+
+            const response = await fetch(loginUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: emailInput, password })
+                body: JSON.stringify(payload)
             });
 
-            const data = await response.json();
+            console.log("⬅️ Response status:", response.status);
+            let responseBody = null;
+            try {
+                responseBody = await response.clone().json();
+            } catch (e) {
+                try { responseBody = await response.clone().text(); } catch { responseBody = "<unreadable>"; }
+            }
+            console.log("⬅️ Response body:", responseBody);
+            console.log("⬅️ Request end:", new Date().toISOString());
+
+            if (response.status === 404) {
+                console.error("❌ API ROUTE NOT FOUND", { url: loginUrl });
+            }
+
+            console.groupEnd();
+
+            const data = responseBody;
 
             if (data.success) {
                 // Store token and basic user info
