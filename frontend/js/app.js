@@ -1,4 +1,4 @@
-const BASE_URL = window.BASE_URL || window.API_BASE_URL;
+const BASE_URL = window.API_BASE_URL;
 
 
 // ===========================
