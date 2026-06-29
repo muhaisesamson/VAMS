@@ -764,6 +764,7 @@
     function getToken() { return localStorage.getItem("vamsToken"); }
     function getUser() { try { return JSON.parse(localStorage.getItem("vamsUser")); } catch { return null; } }
     function byId(id) { return document.getElementById(id); }
+    const BASE_URL = window.API_BASE_URL || "https://vams-vnbr.onrender.com";
 
     function showToast(msg, duration = 3500) {
       const t = byId("toast");
@@ -1747,8 +1748,8 @@
     function getToken() { return localStorage.getItem("vamsToken"); }
     function getUser() { try { return JSON.parse(localStorage.getItem("vamsUser")); } catch { return null; } }
     function byId(id) { return document.getElementById(id); }
-    const BASE_URL = window.API_BASE_URL;
-    
+    const BASE_URL = window.API_BASE_URL || "https://vams-vnbr.onrender.com";
+
     function showToast(msg, duration = 3500) {
       const t = byId("toast");
       t.textContent = msg;
