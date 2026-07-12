@@ -1,0 +1,31 @@
+<section class="panel">
+  <span class="badge">Super Administrator</span>
+  <h2 style="margin:14px 0 10px">Operations overview</h2>
+  <p class="subtle">Review all committee activity in one place.</p>
+  <div id="superAdminStats" class="cards-4"></div>
+  <div id="superAdminList" class="list" style="margin-top:16px"></div>
+</section>
+<script>
+window.renderAdminPanel = async function(role){
+  const stats = document.getElementById('superAdminStats');
+  const list = document.getElementById('superAdminList');
+  if (!stats || !list) return;
+  const apps = await window.mockData.getApplications();
+  const docs = await window.mockData.getDocuments();
+  stats.innerHTML = `
+    <div class="dashboard-card"><div class="label">Applications</div><div class="num">${apps.length}</div></div>
+    <div class="dashboard-card"><div class="label">Documents</div><div class="num">${docs.length}</div></div>
+    <div class="dashboard-card"><div class="label">Pending</div><div class="num">${apps.filter((app) => app.status === 'pending').length}</div></div>
+    <div class="dashboard-card"><div class="label">Approved</div><div class="num">${apps.filter((app) => app.status === 'approved').length}</div></div>
+  `;
+  list.innerHTML = apps.map((app) => `
+    <div class="list-item" style="justify-content:space-between; align-items:center; flex-wrap:wrap">
+      <div>
+        <strong>${app.applicant}</strong>
+        <div class="subtle">${app.type} • ${app.status}</div>
+      </div>
+      <span class="pill yellow">${app.decision}</span>
+    </div>
+  `).join('');
+};
+</script>

@@ -1,31 +1,25 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const { verifyToken, requireAdmin } = require("../middleware/authMiddleware");
+const { verifyToken, requireRole } = require('../middleware/authMiddleware');
 const {
-    getAllVeterans,
-    getVeteranById,
-    verifyVeteran,
-    updateAccountStatus,
-    getStats
-} = require("../controllers/adminController");
+  getAllVeterans,
+  getVeteranById,
+  listDocuments,
+  reviewDocument,
+  listApplications,
+  reviewApplication,
+  getOverview
+} = require('../controllers/adminController');
 
-// All admin routes require a valid JWT AND admin role
-router.use(verifyToken, requireAdmin);
+router.use(verifyToken);
 
-// GET  /api/admin/stats
-router.get("/stats", getStats);
-
-// GET  /api/admin/veterans?status=Pending&page=1&limit=20
-router.get("/veterans", getAllVeterans);
-
-// GET  /api/admin/veterans/:id
-router.get("/veterans/:id", getVeteranById);
-
-// PUT  /api/admin/veterans/:id/verify   body: { action: "approve" | "reject" }
-router.put("/veterans/:id/verify", verifyVeteran);
-
-// PUT  /api/admin/veterans/:id/status   body: { status: "active" | "suspended" | "pending" }
-router.put("/veterans/:id/status", updateAccountStatus);
+router.get('/veterans', requireRole('doc-verifier', 'pension-committee', 'healthcare-committee', 'education-committee', 'super-admin'), getAllVeterans);
+router.get('/veterans/:id', requireRole('doc-verifier', 'pension-committee', 'healthcare-committee', 'education-committee', 'super-admin'), getVeteranById);
+router.get('/documents', requireRole('doc-verifier', 'super-admin'), listDocuments);
+router.patch('/documents/:id', requireRole('doc-verifier', 'super-admin'), reviewDocument);
+router.get('/applications', requireRole('pension-committee', 'healthcare-committee', 'education-committee', 'super-admin'), listApplications);
+router.patch('/applications/:id', requireRole('pension-committee', 'healthcare-committee', 'education-committee', 'super-admin'), reviewApplication);
+router.get('/overview', requireRole('super-admin'), getOverview);
 
 module.exports = router;

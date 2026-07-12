@@ -1,0 +1,5 @@
+ALTER TABLE IF EXISTS documents
+  ALTER COLUMN doc_type TYPE VARCHAR(80);
+
+ALTER TABLE IF EXISTS applications
+  ALTER COLUMN coverage_value TYPE VARCHAR(255);

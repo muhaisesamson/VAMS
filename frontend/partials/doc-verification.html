@@ -1,0 +1,30 @@
+<section class="panel">
+  <span class="badge">Document Verification Board</span>
+  <h2 style="margin:14px 0 10px">Pending document review</h2>
+  <p class="subtle">Review novice submissions and approve or reject each case.</p>
+  <div id="docVerificationList" class="list"></div>
+</section>
+<script>
+window.renderAdminPanel = async function(role){
+  const list = document.getElementById('docVerificationList');
+  if (!list) return;
+  const docs = await window.mockData.getDocuments();
+  const veterans = await window.mockData.getVeterans();
+  const html = docs.map((doc) => {
+    const veteran = veterans.find((entry) => entry.id === doc.veteranId);
+    return `
+      <div class="list-item" style="justify-content:space-between; align-items:center">
+        <div>
+          <strong>${veteran ? veteran.fullName : doc.veteranId}</strong>
+          <div class="subtle">${doc.fileName} • ${doc.type}</div>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button class="soft-btn" type="button">Approve</button>
+          <button class="ghost-btn" type="button">Reject</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  list.innerHTML = html || '<div class="note">No documents pending review.</div>';
+};
+</script>

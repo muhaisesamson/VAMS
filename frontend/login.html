@@ -34,20 +34,30 @@
     <div class="container forms">
       <section class="form-card">
         <span class="badge">Account access</span>
-        <h1 style="margin:14px 0 10px">Login to your veteran account</h1>
-        <p class="subtle" style="line-height:1.7">Use your National ID, service number, or registered email address.</p>
+        <h1 style="margin:14px 0 10px">Choose your access path</h1>
+        <p class="subtle" style="line-height:1.7">Veterans can sign in to view personal applications; committee members can access the role-based admin dashboard.</p>
+        <div class="role-switch" aria-label="Login role selector">
+          <label class="role-option active">
+            <input type="radio" name="loginRole" value="veteran" checked />
+            <span>Veteran Login</span>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="loginRole" value="admin" />
+            <span>Admin Login</span>
+          </label>
+        </div>
         <form id="loginForm" style="margin-top:18px; display:grid; gap:14px">
           <div class="field full">
-            <label for="loginId">National ID / Service Number / Email</label>
-            <input id="loginId" type="text" placeholder="UG-XXXXXXXXXX or UPDF-001" />
+            <label for="loginId">Email address</label>
+            <input id="loginId" type="text" placeholder="amina@example.com or george@example.com" />
           </div>
           <div class="field full">
             <label for="loginPassword">Password</label>
-            <input id="loginPassword" type="password" placeholder="Your account password" />
+            <input id="loginPassword" type="password" placeholder="Use 'demo' for veterans or 'admin123' for admins" />
           </div>
           <div id="loginMessage" class="note" style="display:none"></div>
           <button class="cta-btn" type="submit">Login</button>
-          <button id="useDemoAccount" class="soft-btn" type="button">Fill demo account</button>
+          <button id="useDemoAccount" class="soft-btn" type="button">Fill demo credentials</button>
         </form>
       </section>
       <aside class="form-card" style="background:linear-gradient(180deg, rgba(11,45,91,.96), rgba(11,45,91,.84)); color:#fff;">
@@ -62,11 +72,11 @@
           <div class="list-item" style="background:rgba(255,255,255,.08)"><div><strong>Existing users</strong><div style="color:rgba(255,255,255,.82)">Log in after your record is approved.</div></div></div>
           <div class="list-item" style="background:rgba(255,255,255,.08)"><div><strong>New users</strong><div style="color:rgba(255,255,255,.82)">Register first, then await verification.</div></div></div>
         </div>
-        <div style="margin-top:18px"><a class="ghost-btn" href="register.html" style="color:#fff;border-color:rgba(255,255,255,.24)">Go to registration</a></div>
+        <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap"><a class="ghost-btn" href="register.html" style="color:#fff;border-color:rgba(255,255,255,.24)">Register as veteran</a><a class="ghost-btn" href="admin-register.html" style="color:#fff;border-color:rgba(255,255,255,.24)">Admin registration</a></div>
       </aside>
     </div>
   </main>
-  <script src="js/config.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
 </body>
 </html>

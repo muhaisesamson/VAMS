@@ -1,0 +1,32 @@
+<section class="panel">
+  <span class="badge">Healthcare Committee</span>
+  <h2 style="margin:14px 0 10px">Healthcare applications</h2>
+  <p class="subtle">Review care-level requests and confirm service coverage.</p>
+  <div id="healthcareList" class="list"></div>
+</section>
+<script>
+window.renderAdminPanel = async function(role){
+  const list = document.getElementById('healthcareList');
+  if (!list) return;
+  const apps = (await window.mockData.getApplications()).filter((app) => app.type === 'healthcare');
+  list.innerHTML = apps.map((app) => `
+    <div class="list-item" style="display:grid; gap:10px">
+      <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap">
+        <div>
+          <strong>${app.applicant}</strong>
+          <div class="subtle">${app.id} • ${app.submittedAt}</div>
+        </div>
+        <span class="pill blue">${app.status}</span>
+      </div>
+      <label>
+        Coverage level
+        <input type="text" value="${app.coverage || 'Basic'}" />
+      </label>
+      <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <button class="soft-btn" type="button">Approve</button>
+        <button class="ghost-btn" type="button">Reject</button>
+      </div>
+    </div>
+  `).join('');
+};
+</script>

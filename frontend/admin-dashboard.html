@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Uganda Veterans Affairs Management System</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="top-strip"></div>
+  <div class="container dashboard-shell">
+    <aside class="sidebar">
+      <div class="brand" style="align-items:center; gap:12px">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Admin Portal</strong>
+          <span>Veterans Affairs</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="admin-dashboard.html" class="active">Overview</a>
+        <a href="verify.html">Verification Board</a>
+        <a href="services.html">Services</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>Committee dashboard</h1>
+          <p class="subtle">Role-based views for document verification, pensions, healthcare, education, and super-admin overview.</p>
+        </div>
+        <div class="note">Current role: <strong id="currentRoleLabel">doc-verifier</strong></div>
+      </div>
+      <section class="panel" style="padding:24px">
+        <div class="field" style="max-width:280px">
+          <label for="roleSelector">Switch mock role</label>
+          <select id="roleSelector">
+            <option value="doc-verifier">Document Verification Board</option>
+            <option value="pension-committee">Pension Committee</option>
+            <option value="healthcare-committee">Healthcare Committee</option>
+            <option value="education-committee">Education Committee</option>
+            <option value="super-admin">Super Administrator</option>
+          </select>
+        </div>
+        <div id="dashboard-content" style="margin-top:18px"></div>
+      </section>
+    </main>
+  </div>
+  <script src="js/data.js"></script>
+  <script src="js/rbac.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      const roleSelector = document.getElementById('roleSelector');
+      const roleLabel = document.getElementById('currentRoleLabel');
+      const content = document.getElementById('dashboard-content');
+      if (roleSelector) {
+        roleSelector.addEventListener('change', async function () {
+          const role = this.value;
+          if (roleLabel) roleLabel.textContent = role;
+          await window.rbac.loadAdminPanel(content, role);
+        });
+      }
+      const initialRole = window.rbac.getCurrentAdminRole();
+      if (roleSelector) roleSelector.value = initialRole;
+      if (roleLabel) roleLabel.textContent = initialRole;
+      await window.rbac.loadAdminPanel(content, initialRole);
+    });
+  </script>
+</body>
+</html>

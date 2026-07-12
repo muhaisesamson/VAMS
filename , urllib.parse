@@ -1,0 +1,26 @@
+                                          Table "public.veterans"
+       Column        |          Type          | Collation | Nullable |               Default                
+---------------------+------------------------+-----------+----------+--------------------------------------
+ id                  | integer                |           | not null | nextval('veterans_id_seq'::regclass)
+ user_id             | integer                |           | not null | 
+ first_name          | character varying(100) |           | not null | 
+ last_name           | character varying(100) |           | not null | 
+ gender              | character varying(10)  |           | not null | 
+ date_of_birth       | date                   |           | not null | 
+ national_id         | character varying(20)  |           | not null | 
+ phone               | character varying(20)  |           | not null | 
+ service_number      | character varying(50)  |           | not null | 
+ service_branch      | character varying(100) |           | not null | 
+ rank                | character varying(100) |           | not null | 
+ years_served        | integer                |           | not null | 
+ verification_status | character varying(20)  |           |          | 'Pending'::character varying
+Indexes:
+    "veterans_pkey" PRIMARY KEY, btree (id)
+    "veterans_national_id_key" UNIQUE CONSTRAINT, btree (national_id)
+    "veterans_service_number_key" UNIQUE CONSTRAINT, btree (service_number)
+    "veterans_user_id_key" UNIQUE CONSTRAINT, btree (user_id)
+Foreign-key constraints:
+    "veterans_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+Referenced by:
+    TABLE "verification_documents" CONSTRAINT "verification_documents_veteran_id_fkey" FOREIGN KEY (veteran_id) REFERENCES veterans(id) ON DELETE CASCADE
+

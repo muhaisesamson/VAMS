@@ -1,0 +1,34 @@
+[
+  {
+    "id": "DOC-101",
+    "veteranId": "V-1001",
+    "type": "nationalId",
+    "fileName": "national-id-amin.jpg",
+    "status": "approved",
+    "submittedAt": "2026-06-09"
+  },
+  {
+    "id": "DOC-102",
+    "veteranId": "V-1001",
+    "type": "armyId",
+    "fileName": "service-id-amin.pdf",
+    "status": "pending",
+    "submittedAt": "2026-06-10"
+  },
+  {
+    "id": "DOC-103",
+    "veteranId": "V-1002",
+    "type": "discharge",
+    "fileName": "discharge-joseph.pdf",
+    "status": "rejected",
+    "submittedAt": "2026-06-06"
+  },
+  {
+    "id": "DOC-104",
+    "veteranId": "V-1003",
+    "type": "supporting",
+    "fileName": "medical-letter-ruth.pdf",
+    "status": "approved",
+    "submittedAt": "2026-06-07"
+  }
+]

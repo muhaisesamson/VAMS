@@ -1,0 +1,62 @@
+[
+  {
+    "id": "APP-001",
+    "type": "pension",
+    "veteranId": "V-1001",
+    "applicant": "Amina Nakato",
+    "submittedAt": "2026-06-12",
+    "status": "pending",
+    "amount": "0",
+    "decision": "Awaiting pension review"
+  },
+  {
+    "id": "APP-002",
+    "type": "healthcare",
+    "veteranId": "V-1001",
+    "applicant": "Amina Nakato",
+    "submittedAt": "2026-06-10",
+    "status": "approved",
+    "coverage": "Comprehensive",
+    "decision": "Coverage approved"
+  },
+  {
+    "id": "APP-003",
+    "type": "education",
+    "veteranId": "V-1002",
+    "applicant": "Joseph Muwonge",
+    "submittedAt": "2026-06-05",
+    "status": "rejected",
+    "amount": "0",
+    "decision": "Supporting documents incomplete"
+  },
+  {
+    "id": "APP-004",
+    "type": "pension",
+    "veteranId": "V-1003",
+    "applicant": "Ruth Namuddu",
+    "submittedAt": "2026-06-14",
+    "status": "approved",
+    "amount": "850000",
+    "decision": "Approved for monthly pension"
+  },
+  {
+    "id": "APP-005",
+    "type": "healthcare",
+    "veteranId": "V-1002",
+    "applicant": "Joseph Muwonge",
+    "submittedAt": "2026-06-15",
+    "status": "pending",
+    "coverage": "Basic",
+    "decision": "Pending committee review"
+  },
+  {
+    "id": "APP-006",
+    "type": "education",
+    "veteranId": "V-1003",
+    "applicant": "Ruth Namuddu",
+    "submittedAt": "2026-06-08",
+    "status": "pending",
+    "amount": "0",
+    "decision": "Awaiting funding decision"
+  }
+]

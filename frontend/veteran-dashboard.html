@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veteran Dashboard | Uganda Veterans Affairs Management System</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="top-strip"></div>
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Veteran Portal</strong>
+          <span>Affairs Management System</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a data-nav href="veteran-dashboard.html">Dashboard</a>
+        <a data-nav href="services.html">Services</a>
+        <a data-nav href="verify.html">Verification</a>
+      </nav>
+    </div>
+  </header>
+  <main class="section">
+    <div class="container">
+      <div class="mini-banner">
+        <div>
+          <h3>My applications and document status</h3>
+          <p>Track pension, healthcare, education requests and document verification progress.</p>
+        </div>
+        <span class="badge" id="welcomeBadge">Loading...</span>
+      </div>
+      <div class="info-grid" style="margin-top:18px">
+        <section id="veteranSummary"></section>
+        <section class="panel">
+          <span class="badge">Current status</span>
+          <div id="applicationsList" style="margin-top:12px"></div>
+        </section>
+      </div>
+      <section class="panel" style="margin-top:18px">
+        <span class="badge">Uploaded documents</span>
+        <div id="documentsList" class="list" style="margin-top:12px"></div>
+      </section>
+    </div>
+  </main>
+  <script src="js/data.js"></script>
+  <script src="js/ui-render.js"></script>
+  <script>
+    (async function () {
+      const user = window.mockData.getCurrentSessionUser();
+      const badge = document.getElementById('welcomeBadge');
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      if (badge) badge.textContent = `Welcome ${user.fullName}`;
+      const veteran = (await window.mockData.getVeterans()).find((entry) => entry.id === user.id);
+      window.uiRender.renderVeteranSummary(document.getElementById('veteranSummary'), veteran);
+      const apps = await window.mockData.getMyApplications();
+      window.uiRender.renderApplications(document.getElementById('applicationsList'), apps);
+      const docs = await window.mockData.getCurrentVeteranDocuments();
+      window.uiRender.renderDocuments(document.getElementById('documentsList'), docs);
+    })();
+  </script>
+</body>
+</html>

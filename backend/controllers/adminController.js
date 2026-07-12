@@ -1,270 +1,167 @@
-const db = require("../config/db");
-
-
-// ===========================
-// GET ALL VETERANS (paginated)
-// ===========================
+const db = require('../config/db');
 
 const getAllVeterans = async (req, res) => {
-
-    try {
-
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 20;
-        const offset = (page - 1) * limit;
-
-        // Optional: filter by verification_status e.g. ?status=Pending
-        const { status } = req.query;
-
-        let query = `
-            SELECT
-                v.id, v.first_name, v.last_name, v.national_id,
-                v.service_number, v.service_branch, v.rank,
-                v.years_served, v.verification_status,
-                u.email, u.account_status, u.created_at
-            FROM veterans v
-            JOIN users u ON v.user_id = u.id
-        `;
-
-        const params = [];
-
-        if (status) {
-            params.push(status);
-            query += ` WHERE v.verification_status = $1`;
-        }
-
-        query += ` ORDER BY u.created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-        params.push(limit, offset);
-
-        const result = await db.query(query, params);
-
-        // Total count for pagination
-        const countResult = await db.query(
-            status
-                ? "SELECT COUNT(*) FROM veterans WHERE verification_status = $1"
-                : "SELECT COUNT(*) FROM veterans",
-            status ? [status] : []
-        );
-
-        return res.status(200).json({
-            success: true,
-            data: result.rows,
-            pagination: {
-                total: parseInt(countResult.rows[0].count),
-                page,
-                limit,
-                pages: Math.ceil(countResult.rows[0].count / limit)
-            }
-        });
-
-    } catch (error) {
-        console.error("getAllVeterans error:", error);
-        return res.status(500).json({ success: false, message: "Server error." });
-    }
-
+  try {
+    const result = await db.query(
+      `SELECT id, full_name, email, phone, service_number, national_id, service_branch, rank, years_served, verification_status, created_at
+       FROM veterans ORDER BY created_at DESC`
+    );
+    return res.status(200).json({ success: true, data: result.rows });
+  } catch (error) {
+    console.error('getAllVeterans error:', error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
 };
-
-
-// ===========================
-// GET SINGLE VETERAN + DOCUMENTS
-// ===========================
 
 const getVeteranById = async (req, res) => {
-
-    try {
-
-        const { id } = req.params;
-
-        const vetResult = await db.query(
-            `SELECT
-                v.*, u.email, u.account_status, u.role, u.created_at
-             FROM veterans v
-             JOIN users u ON v.user_id = u.id
-             WHERE v.id = $1`,
-            [id]
-        );
-
-        if (vetResult.rows.length === 0) {
-            return res.status(404).json({ success: false, message: "Veteran not found." });
-        }
-
-        const docsResult = await db.query(
-            `SELECT id, document_type, file_name, verification_status, uploaded_at
-             FROM verification_documents
-             WHERE veteran_id = $1
-             ORDER BY uploaded_at DESC`,
-            [id]
-        );
-
-        return res.status(200).json({
-            success: true,
-            data: {
-                ...vetResult.rows[0],
-                documents: docsResult.rows
-            }
-        });
-
-    } catch (error) {
-        console.error("getVeteranById error:", error);
-        return res.status(500).json({ success: false, message: "Server error." });
+  try {
+    const { id } = req.params;
+    const veteranResult = await db.query(
+      `SELECT id, full_name, email, phone, service_number, national_id, service_branch, rank, years_served, verification_status, created_at FROM veterans WHERE id = $1`,
+      [id]
+    );
+    if (veteranResult.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Veteran not found.' });
     }
 
+    const docsResult = await db.query(
+      `SELECT id, doc_type, file_path, status, created_at FROM documents WHERE veteran_id = $1 ORDER BY created_at DESC`,
+      [id]
+    );
+
+    return res.status(200).json({ success: true, data: { ...veteranResult.rows[0], documents: docsResult.rows } });
+  } catch (error) {
+    console.error('getVeteranById error:', error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
 };
 
+const listDocuments = async (req, res) => {
+  try {
+    const result = await db.query(
+      `SELECT d.id, d.veteran_id, d.doc_type, d.file_path, d.status, d.created_at, v.full_name
+       FROM documents d JOIN veterans v ON v.id = d.veteran_id ORDER BY d.created_at DESC`
+    );
+    return res.status(200).json({ success: true, data: result.rows });
+  } catch (error) {
+    console.error('listDocuments error:', error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
 
-// ===========================
-// VERIFY VETERAN (Approve / Reject)
-// ===========================
-
-const verifyVeteran = async (req, res) => {
-
-    const client = await db.connect();
-
-    try {
-
-        await client.query("BEGIN");
-
-        const { id } = req.params;
-        const { action } = req.body; // "approve" or "reject"
-
-        if (!["approve", "reject"].includes(action)) {
-            return res.status(400).json({
-                success: false,
-                message: "Action must be 'approve' or 'reject'."
-            });
-        }
-
-        const newVerificationStatus = action === "approve" ? "Verified" : "Rejected";
-
-        // Update veteran's verification_status
-        const vetResult = await client.query(
-            `UPDATE veterans
-             SET verification_status = $1
-             WHERE id = $2
-             RETURNING user_id, verification_status`,
-            [newVerificationStatus, id]
-        );
-
-        if (vetResult.rows.length === 0) {
-            await client.query("ROLLBACK");
-            return res.status(404).json({ success: false, message: "Veteran not found." });
-        }
-
-        const userId = vetResult.rows[0].user_id;
-
-        // If approved → activate their account
-        // If rejected → keep pending (admin can suspend separately)
-        if (action === "approve") {
-            await client.query(
-                "UPDATE users SET account_status = 'active' WHERE id = $1",
-                [userId]
-            );
-        }
-
-        await client.query("COMMIT");
-
-        return res.status(200).json({
-            success: true,
-            message: `Veteran ${action === "approve" ? "approved" : "rejected"} successfully.`,
-            data: vetResult.rows[0]
-        });
-
-    } catch (error) {
-        await client.query("ROLLBACK");
-        console.error("verifyVeteran error:", error);
-        return res.status(500).json({ success: false, message: "Server error." });
-    } finally {
-        client.release();
+const reviewDocument = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    if (!['pending', 'approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'status must be pending, approved, or rejected.' });
     }
 
-};
+    const result = await db.query(
+      `UPDATE documents SET status = $1, reviewed_by = $2, reviewed_at = NOW() WHERE id = $3 RETURNING id, status, reviewed_by, reviewed_at`,
+      [status, req.user.id, id]
+    );
 
-
-// ===========================
-// SUSPEND / REINSTATE ACCOUNT
-// ===========================
-
-const updateAccountStatus = async (req, res) => {
-
-    try {
-
-        const { id } = req.params; // veteran id
-        const { status } = req.body; // "active", "suspended", "pending"
-
-        if (!["active", "suspended", "pending"].includes(status)) {
-            return res.status(400).json({
-                success: false,
-                message: "Status must be 'active', 'suspended', or 'pending'."
-            });
-        }
-
-        // Get user_id from veteran id
-        const vet = await db.query(
-            "SELECT user_id FROM veterans WHERE id = $1",
-            [id]
-        );
-
-        if (vet.rows.length === 0) {
-            return res.status(404).json({ success: false, message: "Veteran not found." });
-        }
-
-        await db.query(
-            "UPDATE users SET account_status = $1 WHERE id = $2",
-            [status, vet.rows[0].user_id]
-        );
-
-        return res.status(200).json({
-            success: true,
-            message: `Account status updated to '${status}'.`
-        });
-
-    } catch (error) {
-        console.error("updateAccountStatus error:", error);
-        return res.status(500).json({ success: false, message: "Server error." });
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Document not found.' });
     }
 
+    return res.status(200).json({ success: true, message: 'Document updated successfully.', data: result.rows[0] });
+  } catch (error) {
+    console.error('reviewDocument error:', error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
 };
 
+const listApplications = async (req, res) => {
+  try {
+    const { service } = req.query;
+    const allowedRoles = {
+      pension: ['pension-committee', 'super-admin'],
+      healthcare: ['healthcare-committee', 'super-admin'],
+      education: ['education-committee', 'super-admin']
+    };
 
-// ===========================
-// DASHBOARD STATS
-// ===========================
-
-const getStats = async (req, res) => {
-
-    try {
-
-        const [total, pending, verified, rejected, suspended] = await Promise.all([
-            db.query("SELECT COUNT(*) FROM veterans"),
-            db.query("SELECT COUNT(*) FROM veterans WHERE verification_status = 'Pending'"),
-            db.query("SELECT COUNT(*) FROM veterans WHERE verification_status = 'Verified'"),
-            db.query("SELECT COUNT(*) FROM veterans WHERE verification_status = 'Rejected'"),
-            db.query("SELECT COUNT(*) FROM users WHERE account_status = 'suspended'")
-        ]);
-
-        return res.status(200).json({
-            success: true,
-            data: {
-                total_veterans: parseInt(total.rows[0].count),
-                pending_verification: parseInt(pending.rows[0].count),
-                verified: parseInt(verified.rows[0].count),
-                rejected: parseInt(rejected.rows[0].count),
-                suspended_accounts: parseInt(suspended.rows[0].count)
-            }
-        });
-
-    } catch (error) {
-        console.error("getStats error:", error);
-        return res.status(500).json({ success: false, message: "Server error." });
+    if (service && !allowedRoles[service]) {
+      return res.status(400).json({ success: false, message: 'Invalid service filter.' });
     }
 
+    if (service && !allowedRoles[service].includes(req.user.role)) {
+      return res.status(403).json({ success: false, message: 'You do not have access to that service.' });
+    }
+
+    let query = `SELECT a.id, a.veteran_id, a.service_type, a.status, a.amount, a.coverage_value, a.submitted_at, a.reviewed_at, v.full_name FROM applications a JOIN veterans v ON v.id = a.veteran_id`;
+    const params = [];
+    if (service) {
+      query += ' WHERE a.service_type = $1';
+      params.push(service);
+    }
+    query += ' ORDER BY a.submitted_at DESC';
+
+    const result = await db.query(query, params);
+    return res.status(200).json({ success: true, data: result.rows });
+  } catch (error) {
+    console.error('listApplications error:', error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
 };
 
+const reviewApplication = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, amount, coverage_value } = req.body;
+    if (!['pending', 'approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'status must be pending, approved, or rejected.' });
+    }
+
+    const result = await db.query(
+      `UPDATE applications SET status = $1, amount = COALESCE($2, amount), coverage_value = COALESCE($3, coverage_value), reviewed_by = $4, reviewed_at = NOW() WHERE id = $5 RETURNING id, service_type, status, amount, coverage_value`,
+      [status, amount || null, coverage_value || null, req.user.id, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Application not found.' });
+    }
+
+    return res.status(200).json({ success: true, message: 'Application updated successfully.', data: result.rows[0] });
+  } catch (error) {
+    console.error('reviewApplication error:', error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+const getOverview = async (req, res) => {
+  try {
+    const [veterans, pendingDocs, approvedDocs, pendingApps, approvedApps] = await Promise.all([
+      db.query('SELECT COUNT(*) AS total FROM veterans'),
+      db.query("SELECT COUNT(*) AS total FROM documents WHERE status = 'pending'"),
+      db.query("SELECT COUNT(*) AS total FROM documents WHERE status = 'approved'"),
+      db.query("SELECT COUNT(*) AS total FROM applications WHERE status = 'pending'"),
+      db.query("SELECT COUNT(*) AS total FROM applications WHERE status = 'approved'")
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        total_veterans: parseInt(veterans.rows[0].total, 10),
+        pending_documents: parseInt(pendingDocs.rows[0].total, 10),
+        approved_documents: parseInt(approvedDocs.rows[0].total, 10),
+        pending_applications: parseInt(pendingApps.rows[0].total, 10),
+        approved_applications: parseInt(approvedApps.rows[0].total, 10)
+      }
+    });
+  } catch (error) {
+    console.error('getOverview error:', error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
 
 module.exports = {
-    getAllVeterans,
-    getVeteranById,
-    verifyVeteran,
-    updateAccountStatus,
-    getStats
+  getAllVeterans,
+  getVeteranById,
+  listDocuments,
+  reviewDocument,
+  listApplications,
+  reviewApplication,
+  getOverview
 };

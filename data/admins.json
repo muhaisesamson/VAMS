@@ -1,0 +1,42 @@
+[
+  {
+    "id": "A-2001",
+    "fullName": "George Mukasa",
+    "email": "george@example.com",
+    "password": "admin123",
+    "role": "doc-verifier",
+    "department": "Document Verification Board"
+  },
+  {
+    "id": "A-2002",
+    "fullName": "Sarah Oketcho",
+    "email": "sarah@example.com",
+    "password": "admin123",
+    "role": "pension-committee",
+    "department": "Pension Committee"
+  },
+  {
+    "id": "A-2003",
+    "fullName": "Daniel Kato",
+    "email": "daniel@example.com",
+    "password": "admin123",
+    "role": "healthcare-committee",
+    "department": "Healthcare Committee"
+  },
+  {
+    "id": "A-2004",
+    "fullName": "Catherine Amony",
+    "email": "catherine@example.com",
+    "password": "admin123",
+    "role": "education-committee",
+    "department": "Education Committee"
+  },
+  {
+    "id": "A-2005",
+    "fullName": "Moses Wamala",
+    "email": "moses@example.com",
+    "password": "admin123",
+    "role": "super-admin",
+    "department": "Central Administration"
+  }
+]

@@ -27,110 +27,57 @@ app.listen(PORT, () => {
 });
 */
 
-require("dotenv").config();
+require('dotenv').config();
 
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-require("dotenv").config();
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 
-const db = require("./config/db");
-
-const authRoutes = require("./routes/authRoutes");
-const veteranRoutes = require("./routes/veteranRoutes");
-const adminRoutes = require("./routes/adminRoutes");
+const authRoutes = require('./routes/authRoutes');
+const veteranRoutes = require('./routes/veteranRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-// ===========================
-// MIDDLEWARE
-// ===========================
-
+app.use(helmet());
 app.use(cors({
   origin: [
-    "http://localhost:5500",
-    "http://127.0.0.1:5500",
-    "https://vams-ten.vercel.app"
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'https://vams-ten.vercel.app'
   ],
   credentials: true
 }));
+app.use(cookieParser());
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   console.log(`➡️ ${req.method} ${req.url}`);
   next();
 });
 
-// Serve uploaded files as static (so frontend can display them)
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/auth', authRoutes);
+app.use('/api', veteranRoutes);
+app.use('/api/admin', adminRoutes);
 
-
-// ===========================
-// ROUTES
-// ===========================
-
-app.use("/api/auth", authRoutes);
-app.use("/api/veteran", veteranRoutes);
-app.use("/api/admin", adminRoutes);
-
-// After your app.use routes, before the generic error handler:
-app.use((err, req, res, next) => {
-    if (err.name === "MulterError" || err.message === "Invalid file type") {
-        return res.status(400).json({ success: false, message: err.message });
-    }
-    console.error("Unhandled error:", err.message);
-    res.status(500).json({ success: false, message: "An unexpected error occurred." });
-});
-
-process.on("unhandledRejection", (err) => {
-  console.error("🔥 UNHANDLED PROMISE REJECTION:", err);
-});
-
-process.on("uncaughtException", (err) => {
-  console.error("🔥 UNCAUGHT EXCEPTION:", err);
+app.get('/', (req, res) => {
+  res.json({ status: 'running', project: 'Uganda Veterans Affairs Management System API' });
 });
 
 app.use((err, req, res, next) => {
-  console.error("🔥 EXPRESS ERROR:", err);
-
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || "Internal Server Error",
-    stack: err.stack,
-  });
+  if (err.name === 'MulterError' || err.message === 'Invalid file type') {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  console.error('Unhandled error:', err.message);
+  res.status(err.status || 500).json({ success: false, message: err.message || 'Unexpected error.' });
 });
-
-// ===========================
-// HEALTH CHECK
-// ===========================
-
-app.get("/", (req, res) => {
-    res.json({
-        status: "running",
-        project: "Uganda Veterans Affairs Management System API"
-    });
-});
-
-
-// ===========================
-// GLOBAL ERROR HANDLER
-// ===========================
-
-app.use((err, req, res, next) => {
-    console.error("Unhandled error:", err.message);
-    res.status(500).json({
-        success: false,
-        message: "An unexpected error occurred."
-    });
-});
-
-
-// ===========================
-// START SERVER
-// ===========================
 
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

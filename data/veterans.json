@@ -1,0 +1,38 @@
+[
+  {
+    "id": "V-1001",
+    "fullName": "Amina Nakato",
+    "email": "amina@example.com",
+    "phone": "+256772111111",
+    "serviceNumber": "UPDF-1001",
+    "nationalId": "CM1001",
+    "branch": "Land Force",
+    "rank": "Captain",
+    "role": "veteran",
+    "status": "verified"
+  },
+  {
+    "id": "V-1002",
+    "fullName": "Joseph Muwonge",
+    "email": "joseph@example.com",
+    "phone": "+256772222222",
+    "serviceNumber": "UPDF-1002",
+    "nationalId": "CM1002",
+    "branch": "Air Force",
+    "rank": "Sergeant",
+    "role": "veteran",
+    "status": "pending"
+  },
+  {
+    "id": "V-1003",
+    "fullName": "Ruth Namuddu",
+    "email": "ruth@example.com",
+    "phone": "+256772333333",
+    "serviceNumber": "UPDF-1003",
+    "nationalId": "CM1003",
+    "branch": "Reserve Force",
+    "rank": "Lieutenant",
+    "role": "veteran",
+    "status": "verified"
+  }
+]
