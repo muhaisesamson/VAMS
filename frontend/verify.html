@@ -338,8 +338,16 @@ hr.sep{
   </main>
 
 <script src="js/data.js"></script>
+<script src="js/app.js"></script>
 <script>
 (function(){
+  const allowedRoles = ['doc-verifier', 'super-admin'];
+  const userRole = getUserRole();
+  if (!userRole || !allowedRoles.includes(userRole)) {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+
   const STATUS = {
     pending:  { label: "Pending review", pillClass: "yellow" },
     approved: { label: "Approved",       pillClass: "green"  },

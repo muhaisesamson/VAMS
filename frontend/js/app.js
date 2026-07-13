@@ -33,6 +33,11 @@ function getUser() {
     }
 }
 
+function getUserRole() {
+    const user = getUser();
+    return user && user.role ? user.role : null;
+}
+
 // Redirect to login if no token found
 function requireAuth() {
 
