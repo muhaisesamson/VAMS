@@ -152,13 +152,9 @@
     </div>
   </footer>
   <script>
-
-    if(localStorage.getItem("vamsCurrentUser")){
-    
-        window.location = "dashboard.html";
-    
+    if (localStorage.getItem("vamsToken")) {
+      window.location = "dashboard.html";
     }
-
   </script>
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
@@ -874,7 +870,7 @@
 
   <!-- Redirect if already logged in -->
   <script>
-    if (localStorage.getItem("vamsCurrentUser")) {
+    if (localStorage.getItem("vamsToken")) {
       window.location = "dashboard.html";
     }
   </script>

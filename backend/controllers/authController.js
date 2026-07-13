@@ -40,6 +40,7 @@ const veteranLogin = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: 'Veteran login successful.',
+      token,
       user: {
         id: veteran.id,
         full_name: veteran.full_name,
@@ -74,6 +75,7 @@ const adminLogin = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: 'Admin login successful.',
+      token,
       user: {
         id: admin.id,
         name: admin.name,

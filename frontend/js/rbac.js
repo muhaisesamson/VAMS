@@ -23,7 +23,7 @@
   };
 
   function getCurrentAdminRole() {
-    const stored = sessionStorage.getItem('vamsCurrentUser') || localStorage.getItem('vamsCurrentUser');
+    const stored = sessionStorage.getItem('vamsUser') || localStorage.getItem('vamsUser');
     if (!stored) return 'doc-verifier';
     try {
       const parsed = JSON.parse(stored);

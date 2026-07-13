@@ -226,7 +226,10 @@ function loginHandlers() {
         btn.textContent = "Logging in...";
 
         try {
-            const loginUrl = `${BASE_URL}/api/auth/login`;
+            const selectedRole = document.querySelector('input[name="loginRole"]:checked')?.value || 'veteran';
+            const loginUrl = selectedRole === 'admin'
+              ? `${BASE_URL}/api/auth/admin/login`
+              : `${BASE_URL}/api/auth/veteran/login`;
             const payload = { email: emailInput, password };
 
             console.group("LOGIN REQUEST");
@@ -260,11 +263,12 @@ function loginHandlers() {
             const data = responseBody;
 
             if (data.success) {
-                // Store token and basic user info
                 localStorage.setItem("vamsToken", data.token);
-                localStorage.setItem("vamsUser", JSON.stringify(data.user));
+                const user = { ...data.user, full_name: data.user.full_name || data.user.name };
+                localStorage.setItem("vamsUser", JSON.stringify(user));
                 setMessage(msg, "Login successful. Redirecting...", "success");
-                setTimeout(() => window.location.href = "dashboard.html", 900);
+                const redirectTo = selectedRole === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';
+                setTimeout(() => window.location.href = redirectTo, 900);
             } else {
                 setMessage(msg, data.message || "Login failed.", "error");
             }
