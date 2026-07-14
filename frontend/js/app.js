@@ -151,8 +151,7 @@ function registerHandlers() {
         // Build FormData — browser sets the correct multipart boundary automatically
         // Do NOT manually set Content-Type when using FormData
         const formData = new FormData();
-        formData.append("first_name",     firstName);
-        formData.append("last_name",      lastName);
+        formData.append("full_name", `${firstName} ${lastName}`.trim());
         formData.append("gender",         gender);
         formData.append("date_of_birth",  dateOfBirth);
         formData.append("national_id",    nin);
