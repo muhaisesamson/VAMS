@@ -47,7 +47,7 @@
             <textarea rows="4" id="supportingNotes" placeholder="Describe your need or request"></textarea>
           </div>
           <p id="pensionMessage" style="display:none"></p>
-          <button type="submit" class="cta-btn">Submit request</button>
+          <button type="submit" class="cta-btn" id="submitBtn">Submit request</button>
         </form>
       </div>
     </div>
@@ -61,6 +61,7 @@
 
     const form = document.getElementById('pensionForm');
     const msg = document.getElementById('pensionMessage');
+    const btn = document.getElementById('submitBtn');
     if (user) document.getElementById('serviceNumber').value = user.serviceNumber || user.service_number || '—';
 
     form.addEventListener('submit', async (e) => {
