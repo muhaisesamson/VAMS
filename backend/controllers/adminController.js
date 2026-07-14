@@ -1,5 +1,11 @@
 const db = require('../config/db');
 
+const roleServiceMap = {
+  'pension-committee': 'pension',
+  'healthcare-committee': 'healthcare',
+  'education-committee': 'education'
+};
+
 const getAllVeterans = async (req, res) => {
   try {
     const result = await db.query(
@@ -76,25 +82,28 @@ const reviewDocument = async (req, res) => {
 const listApplications = async (req, res) => {
   try {
     const { service } = req.query;
-    const allowedRoles = {
-      pension: ['pension-committee', 'super-admin'],
-      healthcare: ['healthcare-committee', 'super-admin'],
-      education: ['education-committee', 'super-admin']
-    };
-
-    if (service && !allowedRoles[service]) {
-      return res.status(400).json({ success: false, message: 'Invalid service filter.' });
-    }
-
-    if (service && !allowedRoles[service].includes(req.user.role)) {
-      return res.status(403).json({ success: false, message: 'You do not have access to that service.' });
+    const validServices = ['pension', 'healthcare', 'education'];
+    let effectiveService = null;
+    
+    if (req.user.role === 'super-admin') {
+      if (service) {
+        if (!validServices.includes(service)) {
+          return res.status(400).json({ success: false, message: 'Invalid service filter.' });
+        }
+        effectiveService = service;
+      }
+    } else {
+      effectiveService = roleServiceMap[req.user.role];
+      if (!effectiveService) {
+        return res.status(403).json({ success: false, message: 'You do not have access to applications.' });
+      }
     }
 
     let query = `SELECT a.id, a.veteran_id, a.service_type, a.status, a.amount, a.coverage_value, a.submitted_at, a.reviewed_at, v.full_name FROM applications a JOIN veterans v ON v.id = a.veteran_id`;
     const params = [];
-    if (service) {
+    if (effectiveService) {
       query += ' WHERE a.service_type = $1';
-      params.push(service);
+      params.push(effectiveService);
     }
     query += ' ORDER BY a.submitted_at DESC';
 
@@ -112,6 +121,16 @@ const reviewApplication = async (req, res) => {
     const { status, amount, coverage_value } = req.body;
     if (!['pending', 'approved', 'rejected'].includes(status)) {
       return res.status(400).json({ success: false, message: 'status must be pending, approved, or rejected.' });
+    }
+
+    if (req.user.role !== 'super-admin') {
+      const existing = await db.query('SELECT service_type FROM applications WHERE id = $1', [id]);
+      if (existing.rows.length === 0) {
+        return res.status(404).json({ success: false, message: 'Application not found.' });
+      }
+      if (existing.rows[0].service_type !== roleServiceMap[req.user.role]) {
+        return res.status(403).json({ success: false, message: 'You do not have access to this application.' });
+      }
     }
 
     const result = await db.query(

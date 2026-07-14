@@ -56,27 +56,38 @@
   <script src="js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async function () {
-      const allowedRoles = ['super-admin'];
+      
       const userRole = getUserRole();
+      const allowedRoles = Object.keys(window.rbac.roleMap);
       if (!userRole || !allowedRoles.includes(userRole)) {
         window.location.href = 'dashboard.html';
         return;
       }
+      const isSuperAdmin = userRole === 'super-admin';
 
       const roleSelector = document.getElementById('roleSelector');
       const roleLabel = document.getElementById('currentRoleLabel');
       const content = document.getElementById('dashboard-content');
+      if (isSuperAdmin) {
+      // Super admin may preview any committee's panel
       if (roleSelector) {
+        roleSelector.style.display = '';
+        roleSelector.closest('.field').style.display = '';
         roleSelector.addEventListener('change', async function () {
           const role = this.value;
           if (roleLabel) roleLabel.textContent = role;
           await window.rbac.loadAdminPanel(content, role);
         });
+        roleSelector.value = userRole;
       }
-      const initialRole = window.rbac.getCurrentAdminRole();
-      if (roleSelector) roleSelector.value = initialRole;
-      if (roleLabel) roleLabel.textContent = initialRole;
-      await window.rbac.loadAdminPanel(content, initialRole);
+      if (roleLabel) roleLabel.textContent = userRole;
+      await window.rbac.loadAdminPanel(content, userRole);
+    } else {
+      // Committee admins / doc-verifier are locked to their own role only
+      if (roleSelector) roleSelector.closest('.field').style.display = 'none';
+      if (roleLabel) roleLabel.textContent = userRole;
+      await window.rbac.loadAdminPanel(content, userRole);
+    }
     });
   </script>
 </body>
