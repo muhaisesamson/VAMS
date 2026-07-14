@@ -176,7 +176,7 @@ function registerHandlers() {
         btn.textContent = "Submitting...";
 
         try {
-            const response = await fetch(`${BASE_URL}/api/auth/register`, {
+            const response = await fetch(`${BASE_URL}/api/auth/veteran/register`, {
                 method: "POST",
                 body: formData
             });
