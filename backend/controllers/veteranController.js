@@ -147,15 +147,40 @@ const getMyApplications = async (req, res) => {
 
 const getDashboard = async (req, res) => {
   try {
-    const profile = await db.query('SELECT id, full_name, verification_status FROM veterans WHERE id = $1', [req.user.id]);
+    const profile = await db.query(
+      `SELECT full_name, email, service_number, service_branch, rank, years_served, verification_status
+       FROM veterans WHERE id = $1`,
+      [req.user.id]
+    );
     const docs = await db.query('SELECT COUNT(*) AS total FROM documents WHERE veteran_id = $1', [req.user.id]);
     const apps = await db.query('SELECT COUNT(*) AS total FROM applications WHERE veteran_id = $1', [req.user.id]);
+
+    const v = profile.rows[0];
+    if (!v) {
+      return res.status(404).json({ success: false, message: 'Veteran profile not found.' });
+    }
+
+    // veterans table stores one combined full_name column, so split it
+    // for the dashboard UI, which expects first_name / last_name separately
+    const nameParts = (v.full_name || '').trim().split(' ');
+    const first_name = nameParts[0] || '';
+    const last_name = nameParts.slice(1).join(' ') || '';
 
     return res.status(200).json({
       success: true,
       data: {
-        full_name: profile.rows[0]?.full_name || null,
-        verification_status: profile.rows[0]?.verification_status || 'pending',
+        first_name,
+        last_name,
+        full_name: v.full_name,
+        email: v.email,
+        service_number: v.service_number,
+        service_branch: v.service_branch,
+        rank: v.rank,
+        years_served: v.years_served,
+        verification_status: v.verification_status || 'pending',
+        // there's no separate account_status column in the DB — reusing
+        // verification_status here since that's the only status you track
+        account_status: v.verification_status || 'pending',
         documents_uploaded: parseInt(docs.rows[0]?.total || 0),
         applications_submitted: parseInt(apps.rows[0]?.total || 0)
       }
