@@ -112,7 +112,7 @@ const getMyDocuments = async (req, res) => {
 
 const submitApplication = async (req, res) => {
   try {
-    const { service_type, amount, coverage_value } = req.body;
+    const { service_type, amount, coverage_value, notes } = req.body;
     if (!service_type) {
       return res.status(400).json({ success: false, message: 'service_type is required.' });
     }
@@ -133,7 +133,7 @@ const submitApplication = async (req, res) => {
 const getMyApplications = async (req, res) => {
   try {
     const result = await db.query(
-      `SELECT id, service_type, status, amount, coverage_value, submitted_at, reviewed_at, reviewed_by
+      `SELECT id, service_type, status, amount, coverage_value, notes, submitted_at, reviewed_at, reviewed_by
        FROM applications WHERE veteran_id = $1 ORDER BY submitted_at DESC`,
       [req.user.id]
     );

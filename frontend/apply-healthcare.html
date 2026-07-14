@@ -29,26 +29,85 @@
       <div class="form-card">
         <span class="badge">Healthcare</span>
         <h1 style="margin:12px 0">Submit healthcare application</h1>
-        <form class="form-grid" style="margin-top:16px">
+        <form class="form-grid" style="margin-top:16px" id="healthcareForm">
           <div class="field">
             <label>Applicant name</label>
-            <input type="text" value="Joseph Muwonge" />
+            <input type="text" id="applicantName" readonly />
           </div>
           <div class="field">
             <label>Preferred coverage</label>
-            <select>
+            <select id="coverageValue">
               <option>Basic</option>
               <option>Comprehensive</option>
             </select>
           </div>
           <div class="field full">
             <label>Medical notes</label>
-            <textarea rows="4" placeholder="Describe the care request"></textarea>
+            <textarea rows="4" id="medicalNotes" placeholder="Describe the care request"></textarea>
           </div>
-          <button type="button" class="cta-btn">Submit mock request</button>
+          <p id="healthcareMessage" style="display:none"></p>
+          <button type="button" class="cta-btn">Submit Application</button>
         </form>
       </div>
     </div>
   </main>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    requireAuth();
+    const user = getUser();
+    if (user) document.getElementById('applicantName').value = user.fullName || user.full_name || user.email;
+
+    const form = document.getElementById('healthcareForm');
+    const msg = document.getElementById('healthcareMessage');
+    const btn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessage(msg);
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      const course = document.getElementById('courseProgramme').value.trim();
+      const motivation = document.getElementById('motivation').value.trim();
+
+      try {
+        const response = await fetch(`${BASE_URL}/api/applications`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({
+            service_type: 'healthcare',
+            coverage_value: document.getElementById('coverageValue').value || null,
+            notes: document.getElementById('medicalNotes').value.trim()
+          })
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem('vamsToken');
+          localStorage.removeItem('vamsUser');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          setMessage(msg, data.message || 'Could not submit application.', 'error');
+          return;
+        }
+
+        setMessage(msg, 'Application submitted successfully.', 'success');
+        form.reset();
+      } catch (err) {
+        setMessage(msg, 'The server is unavailable. Please try again shortly.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Submit application';
+      }
+    });
+  </script>
 </body>
 </html>

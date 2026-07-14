@@ -19,7 +19,7 @@
         </div>
         <div>
           <strong>Pension request</strong>
-          <span>Mock application form</span>
+          <span>Pension Application form</span>
         </div>
       </a>
     </div>
@@ -29,27 +29,86 @@
       <div class="form-card">
         <span class="badge">Pension</span>
         <h1 style="margin:12px 0">Submit pension application</h1>
-        <form class="form-grid" style="margin-top:16px">
+        <form class="form-grid" style="margin-top:16px" id ="pensionForm">
           <div class="field">
             <label>Applicant name</label>
-            <input type="text" value="John Kato" />
+            <input type="text" id="applicantName" readonly/>
           </div>
           <div class="field">
             <label>Service number</label>
-            <input type="text" value="RA-001" />
+            <input type="text" id= "serviceNumber" readonly />
           </div>
           <div class="field full">
             <label>Requested amount</label>
-            <input type="number" value="1200000" />
+            <input type="number" id="requestedAmount" value="1200000" />
           </div>
           <div class="field full">
             <label>Supporting notes</label>
-            <textarea rows="4" placeholder="Describe your need or request"></textarea>
+            <textarea rows="4" id="supportingNotes" placeholder="Describe your need or request"></textarea>
           </div>
-          <button type="button" class="cta-btn">Submit mock request</button>
+          <p id="pensionMessage" style="display:none"></p>
+          <button type="button" class="cta-btn">Submit request</button>
         </form>
       </div>
     </div>
   </main>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    requireAuth();
+    const user = getUser();
+    if (user) document.getElementById('applicantName').value = user.fullName || user.full_name || user.email;
+
+    const form = document.getElementById('pensionForm');
+    const msg = document.getElementById('pensionMessage');
+    if (user) document.getElementById('serviceNumber').value = user.serviceNumber || user.service_number || '—';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessage(msg);
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      const course = document.getElementById('courseProgramme').value.trim();
+      const motivation = document.getElementById('motivation').value.trim();
+
+      try {
+        const response = await fetch(`${BASE_URL}/api/applications`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({
+            service_type: 'pension',
+            amount: document.getElementById('requestedAmount').value || null,
+            notes: document.getElementById('supportingNotes').value.trim()
+          })
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem('vamsToken');
+          localStorage.removeItem('vamsUser');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          setMessage(msg, data.message || 'Could not submit application.', 'error');
+          return;
+        }
+
+        setMessage(msg, 'Application submitted successfully.', 'success');
+        form.reset();
+      } catch (err) {
+        setMessage(msg, 'The server is unavailable. Please try again shortly.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Submit application';
+      }
+    });
+  </script>
 </body>
 </html>

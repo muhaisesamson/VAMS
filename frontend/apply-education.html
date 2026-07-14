@@ -13,13 +13,21 @@
       <a class="brand" href="index.html">
         <div class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
-            <path d="M12 2l8 4v6c0 5-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
+            <path d="M12 2l8 4v6c0 5
+    const result = await db.query(
+      `INSERT INTO applications (veteran_id, service_type, amount, coverage_value, status)
+       VALUES ($1, $2, $3, $4, 'pending') RETURNING id, service_type, status, amount, coverage_value, submitted_at`,
+      [req.user.id, service_type, amount || null, coverage_value || null]
+    );
+
+    return res.status(201).json({ success: true, message: 'Application submitted successfully.', data: result.rows[0] });
+-3.2 8.9-8 10-4.8-1.1-8-5-8-10V6l8-4z" stroke="white" stroke-width="1.7"/>
             <path d="M8.3 12.1l2.4 2.4 5.1-5.1" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <div>
           <strong>Education request</strong>
-          <span>Mock application form</span>
+          <span>Education Application form</span>
         </div>
       </a>
     </div>
@@ -29,27 +37,86 @@
       <div class="form-card">
         <span class="badge">Education</span>
         <h1 style="margin:12px 0">Submit education support application</h1>
-        <form class="form-grid" style="margin-top:16px">
+        <form class="form-grid" style="margin-top:16px" id="education-application-form">
           <div class="field">
             <label>Applicant name</label>
-            <input type="text" value="Ruth Namuddu" />
+            <input type="text" value="applicantName" />
           </div>
           <div class="field">
             <label>Course/programme</label>
-            <input type="text" value="Certificate in ICT" />
+            <input type="text" id ="courseProgramme" value="Certificate in ICT" />
           </div>
           <div class="field full">
             <label>Funding request</label>
-            <input type="number" value="500000" />
+            <input type="number" id="fundingAmount" value="500000" />
           </div>
           <div class="field full">
             <label>Motivation</label>
-            <textarea rows="4" placeholder="Explain the learning need"></textarea>
+            <textarea rows="4" id="motivation" placeholder="Explain the learning need"></textarea>
           </div>
-          <button type="button" class="cta-btn">Submit mock request</button>
+          <p id="educationMessage" style="display:none"></p>
+          <button type="submit" class="cta-btn" id="submitBtn" >Submit Application</button>
         </form>
       </div>
     </div>
   </main>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    requireAuth();
+    const user = getUser();
+    if (user) document.getElementById('applicantName').value = user.fullName || user.full_name || user.email;
+
+    const form = document.getElementById('educationForm');
+    const msg = document.getElementById('educationMessage');
+    const btn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessage(msg);
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      const course = document.getElementById('courseProgramme').value.trim();
+      const motivation = document.getElementById('motivation').value.trim();
+
+      try {
+        const response = await fetch(`${BASE_URL}/api/applications`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({
+            service_type: 'education',
+            amount: document.getElementById('fundingAmount').value || null,
+            notes: `Course/Programme: ${course}\n\n${motivation}`
+          })
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem('vamsToken');
+          localStorage.removeItem('vamsUser');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          setMessage(msg, data.message || 'Could not submit application.', 'error');
+          return;
+        }
+
+        setMessage(msg, 'Application submitted successfully.', 'success');
+        form.reset();
+      } catch (err) {
+        setMessage(msg, 'The server is unavailable. Please try again shortly.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Submit application';
+      }
+      });
+  </script>
 </body>
 </html>
