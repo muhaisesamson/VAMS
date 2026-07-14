@@ -70,9 +70,6 @@
       btn.disabled = true;
       btn.textContent = 'Submitting...';
 
-      const course = document.getElementById('courseProgramme').value.trim();
-      const motivation = document.getElementById('motivation').value.trim();
-
       try {
         const response = await fetch(`${BASE_URL}/api/applications`, {
           method: 'POST',
