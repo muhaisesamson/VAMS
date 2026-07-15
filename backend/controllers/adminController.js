@@ -97,7 +97,7 @@ const reviewVeteranStatus = async (req, res) => {
     const result = await db.query(
       `UPDATE veterans
        SET verification_status = $1,
-           info_request_message = CASE WHEN $1 = 'info_requested' THEN $2 ELSE NULL END,
+           info_request_message = CASE WHEN $1::text = 'info_requested' THEN $2 ELSE NULL END,
            reviewed_by = $3,
            reviewed_at = NOW(),
            updated_at = NOW()
