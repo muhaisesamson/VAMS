@@ -122,19 +122,6 @@ const reviewVeteranStatus = async (req, res) => {
 
     console.log('✅ Query succeeded, rows:', result.rows);
 
-
-    const result = await db.query(
-      `UPDATE veterans
-       SET verification_status = $1,
-           info_request_message = CASE WHEN $1::text = 'info_requested' THEN $2 ELSE NULL END,
-           reviewed_by = $3,
-           reviewed_at = NOW(),
-           updated_at = NOW()
-       WHERE id = $4
-       RETURNING id, full_name, email, verification_status, info_request_message`,
-      [status, message ? message.trim() : null, req.user.id, id]
-    );
-
     if (result.rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Veteran not found.' });
     }
