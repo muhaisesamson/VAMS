@@ -251,6 +251,26 @@ hr.sep{
 }
 .empty-state h3{color:var(--text); margin-bottom:6px}
 
+/* Request more info modal */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(20,20,20,.45);
+  display:none; align-items:center; justify-content:center; z-index:200; padding:20px;
+}
+.modal-overlay.is-open{display:flex}
+.modal-box{
+  background:var(--surface); border-radius:var(--radius); padding:26px;
+  max-width:480px; width:100%; box-shadow:var(--shadow); border:1px solid var(--border);
+}
+.modal-box h3{margin:0 0 8px}
+.modal-box p{margin:0 0 14px; color:var(--muted); font-size:.9rem}
+.modal-box textarea{
+  width:100%; min-height:120px; border-radius:var(--radius-sm); border:1px solid var(--border);
+  padding:12px 14px; resize:vertical; font-family:inherit; font-size:.92rem; color:var(--text);
+}
+.modal-box textarea:focus{outline:2px solid rgba(62,92,58,.35); outline-offset:1px}
+.modal-error{color:var(--danger); font-size:.82rem; min-height:18px; margin-top:6px}
+.modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:16px}
+
 @media (max-width: 1100px){
   .cards-4{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -337,6 +357,19 @@ hr.sep{
     </div>
   </main>
 
+  <div class="modal-overlay" id="infoModal">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <h3 id="infoModalTitle">Request more information</h3>
+      <p>Describe exactly what additional information or documents this veteran needs to provide. This will be sent to them by email.</p>
+      <textarea id="infoMessage" placeholder="e.g. Please upload a clearer scan of your discharge certificate — the current copy is unreadable."></textarea>
+      <div class="modal-error" id="infoModalError"></div>
+      <div class="modal-actions">
+        <button class="ghost-btn" id="infoCancelBtn" type="button">Cancel</button>
+        <button class="soft-btn" id="infoSendBtn" type="button">Send request</button>
+      </div>
+    </div>
+  </div>
+
 <script src="js/config.js"></script>
 <script src="js/app.js"></script>
 <script>
@@ -380,6 +413,7 @@ hr.sep{
         return "rejected";
       case "info":
       case "info requested":
+      case "info_requested":
       case "more info":
         return "info";
       case "pending":
@@ -410,46 +444,50 @@ hr.sep{
     };
 
     (docs || []).forEach((doc) => {
-      const label = (doc.type || "").toLowerCase();
+      const label = (doc.doc_type || "").toLowerCase();
       if (label.includes("national")) {
-        documents.nationalId.push(doc.fileName);
+        documents.nationalId.push(doc.file_path);
       } else if (label.includes("army") || label.includes("service")) {
-        documents.armyId.push(doc.fileName);
+        documents.armyId.push(doc.file_path);
       } else if (label.includes("discharge") || label.includes("retirement")) {
-        documents.discharge.push(doc.fileName);
+        documents.discharge.push(doc.file_path);
       } else {
-        documents.supporting.push(doc.fileName);
+        documents.supporting.push(doc.file_path);
       }
     });
 
     return {
       id: String(vet.id),
-      firstName: vet.fullName ? vet.fullName.split(" ")[0] : "",
-      lastName: vet.fullName ? vet.fullName.split(" ").slice(1).join(" ") : "",
-      serviceNumber: vet.serviceNumber || "",
+      firstName: vet.full_name ? vet.full_name.split(" ")[0] : "",
+      lastName: vet.full_name ? vet.full_name.split(" ").slice(1).join(" ") : "",
+      serviceNumber: vet.service_number || "",
       phone: vet.phone || "",
       email: vet.email || "",
-      registrationDate: vet.status || "",
-      status: normalizeStatus(vet.status),
+      registrationDate: vet.created_at || "",
+      status: normalizeStatus(vet.verification_status),
+      infoMessage: vet.info_request_message || "",
       documents
     };
   }
+     
 
   async function loadSubmissions() {
     listEl.innerHTML = `
       <div class="empty-state">
         <h3>Loading submissions…</h3>
-        <p>Pulling in the mock verification data.</p>
+        <p>Fetching veteran records from the server.</p>
       </div>
     `;
 
     try {
-      const [veterans, documents] = await Promise.all([
-        window.mockData.getVeterans(),
-        window.mockData.getDocuments()
+      const [veteransRes, documentsRes] = await Promise.all([
+        fetch(`${window.API_BASE_URL}/api/admin/veterans`, { headers: { "Authorization": `Bearer ${getToken()}` } }),
+        fetch(`${window.API_BASE_URL}/api/admin/documents`, { headers: { "Authorization": `Bearer ${getToken()}` } })
       ]);
+      const veterans = (await veteransRes.json()).data || [];
+      const documents = (await documentsRes.json()).data || [];
 
-      submissions = veterans.map((vet) => mapVeteranToSubmission(vet, documents.filter((doc) => doc.veteranId === vet.id)));
+      submissions = veterans.map((vet) => mapVeteranToSubmission(vet, documents.filter((doc) => doc.veteran_id === vet.id)));
       summary = { total_veterans: veterans.length, pending_verification: submissions.filter((sub) => sub.status === "pending").length, verified: submissions.filter((sub) => sub.status === "approved").length, rejected: submissions.filter((sub) => sub.status === "rejected").length };
       renderAll();
     } catch (error) {
@@ -457,7 +495,7 @@ hr.sep{
       listEl.innerHTML = `
         <div class="empty-state">
           <h3>Could not load submissions</h3>
-          <p>${error.message || "Please check the mock data files."}</p>
+          <p>${error.message || "Please check your connection and try again."}</p>
         </div>
       `;
     }
@@ -525,11 +563,15 @@ hr.sep{
     `;
   }
 
-  function statusNoteFor(status){
-    switch(status){
+  function statusNoteFor(sub){
+    if (!sub) return "Awaiting review.";
+    switch(sub.status){
       case "approved": return "This submission has been approved.";
       case "rejected": return "This submission has been rejected.";
-      case "info": return "Additional information has been requested from this veteran.";
+      case "info":
+        return sub.infoMessage
+          ? `Additional info requested: "${sub.infoMessage}"`
+          : "Additional information has been requested from this veteran.";
       default: return "Awaiting review.";
     }
   }
@@ -562,10 +604,87 @@ hr.sep{
     listEl.querySelectorAll('[data-role="status-note"]').forEach((el) => {
       const card = el.closest(".submission-card");
       const sub = submissions.find((s) => s.id === card.getAttribute("data-id"));
-      el.textContent = statusNoteFor(sub && sub.status);
+      el.textContent = statusNoteFor(sub);
     });
     updateCounts();
     applyFilter();
+  }
+
+const infoModal = document.getElementById("infoModal");
+  const infoMessageInput = document.getElementById("infoMessage");
+  const infoModalError = document.getElementById("infoModalError");
+  const infoSendBtn = document.getElementById("infoSendBtn");
+  const infoCancelBtn = document.getElementById("infoCancelBtn");
+  let pendingInfoId = null;
+
+  function openInfoModal(id){
+    pendingInfoId = id;
+    infoMessageInput.value = "";
+    infoModalError.textContent = "";
+    infoModal.classList.add("is-open");
+    infoMessageInput.focus();
+  }
+
+  function closeInfoModal(){
+    infoModal.classList.remove("is-open");
+    pendingInfoId = null;
+  }
+
+  infoCancelBtn.addEventListener("click", closeInfoModal);
+
+  infoSendBtn.addEventListener("click", async function(){
+    const message = infoMessageInput.value.trim();
+    if (!message) {
+      infoModalError.textContent = "Please describe what additional information is needed.";
+      return;
+    }
+    infoSendBtn.disabled = true;
+    infoSendBtn.textContent = "Sending...";
+    const ok = await updateVeteranStatus(pendingInfoId, "info_requested", message);
+    infoSendBtn.disabled = false;
+    infoSendBtn.textContent = "Send request";
+    if (ok) closeInfoModal();
+  });
+
+  async function updateVeteranStatus(id, status, message){
+    const card = listEl.querySelector(`.submission-card[data-id="${id}"]`);
+    const buttons = card ? card.querySelectorAll("button[data-action]") : [];
+    buttons.forEach((b) => { b.disabled = true; });
+    const noteEl = card ? card.querySelector('[data-role="status-note"]') : null;
+    if (noteEl) noteEl.textContent = "Saving...";
+
+    try {
+      const res = await fetch(`${window.API_BASE_URL}/api/admin/veterans/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${getToken()}`
+        },
+        body: JSON.stringify({ status, message })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to update status.");
+      }
+
+      const sub = submissions.find((s) => s.id === id);
+      if (sub) {
+        sub.status = status === "info_requested" ? "info" : status;
+        sub.infoMessage = message || "";
+      }
+      renderAll();
+
+      if (data.emailSent === false) {
+        const freshNote = listEl.querySelector(`.submission-card[data-id="${id}"] [data-role="status-note"]`);
+        if (freshNote) freshNote.textContent = "Status updated, but the email notification failed to send.";
+      }
+      return true;
+    } catch (err) {
+      console.error("updateVeteranStatus error:", err);
+      if (noteEl) noteEl.textContent = err.message || "Could not update status. Try again.";
+      buttons.forEach((b) => { b.disabled = false; });
+      return false;
+    }
   }
 
   function handleAction(e){
@@ -573,11 +692,15 @@ hr.sep{
     if (!btn) return;
     const card = e.target.closest(".submission-card");
     const id = card && card.getAttribute("data-id");
-    const newStatus = btn.getAttribute("data-action");
-    const sub = submissions.find((s) => s.id === id);
-    if (!sub) return;
-    sub.status = newStatus === "approved" || newStatus === "rejected" ? newStatus : "info";
-    renderAll();
+    const action = btn.getAttribute("data-action");
+    if (!id) return;
+
+    if (action === "info") {
+      openInfoModal(id);
+      return;
+    }
+
+    updateVeteranStatus(id, action);
   }
 
   function handleViewClick(e){

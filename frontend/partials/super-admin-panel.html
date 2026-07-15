@@ -10,8 +10,14 @@ window.renderAdminPanel = async function(role){
   const stats = document.getElementById('superAdminStats');
   const list = document.getElementById('superAdminList');
   if (!stats || !list) return;
-  const apps = await window.mockData.getApplications();
-  const docs = await window.mockData.getDocuments();
+
+  const [appsRes, docsRes] = await Promise.all([
+    fetch(`${window.API_BASE_URL}/api/admin/applications`, { headers: { "Authorization": `Bearer ${getToken()}` } }),
+    fetch(`${window.API_BASE_URL}/api/admin/documents`, { headers: { "Authorization": `Bearer ${getToken()}` } })
+  ]);
+  const apps = (await appsRes.json()).data || [];
+  const docs = (await docsRes.json()).data || [];
+
   stats.innerHTML = `
     <div class="dashboard-card"><div class="label">Applications</div><div class="num">${apps.length}</div></div>
     <div class="dashboard-card"><div class="label">Documents</div><div class="num">${docs.length}</div></div>
@@ -21,10 +27,10 @@ window.renderAdminPanel = async function(role){
   list.innerHTML = apps.map((app) => `
     <div class="list-item" style="justify-content:space-between; align-items:center; flex-wrap:wrap">
       <div>
-        <strong>${app.applicant}</strong>
-        <div class="subtle">${app.type} • ${app.status}</div>
+        <strong>${app.full_name}</strong>
+        <div class="subtle">${app.service_type} • ${app.status}</div>
       </div>
-      <span class="pill yellow">${app.decision}</span>
+      <span class="pill yellow">${app.status}</span>
     </div>
   `).join('');
 };

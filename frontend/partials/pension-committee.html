@@ -8,25 +8,42 @@
 window.renderAdminPanel = async function(role){
   const list = document.getElementById('pensionList');
   if (!list) return;
-  const apps = (await window.mockData.getApplications()).filter((app) => app.type === 'pension');
+
+  const response = await fetch(`${window.API_BASE_URL}/api/admin/applications`, {
+    headers: { "Authorization": `Bearer ${getToken()}` }
+  });
+  const result = await response.json();
+  const apps = result.data || [];
+
   list.innerHTML = apps.map((app) => `
     <div class="list-item" style="display:grid; gap:10px">
       <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap">
         <div>
-          <strong>${app.applicant}</strong>
-          <div class="subtle">${app.id} • ${app.submittedAt}</div>
+          <strong>${app.full_name}</strong>
+          <div class="subtle">${app.id} • ${new Date(app.submitted_at).toLocaleDateString()}</div>
         </div>
         <span class="pill yellow">${app.status}</span>
       </div>
       <label>
         Approved amount
-        <input type="number" value="${app.amount || 0}" />
+        <input type="number" id="amount-${app.id}" value="${app.amount || 0}" />
       </label>
       <div style="display:flex; gap:8px; flex-wrap:wrap">
-        <button class="soft-btn" type="button">Approve</button>
-        <button class="ghost-btn" type="button">Reject</button>
+        <button class="soft-btn" type="button" onclick="reviewPension('${app.id}', 'approved')">Approve</button>
+        <button class="ghost-btn" type="button" onclick="reviewPension('${app.id}', 'rejected')">Reject</button>
       </div>
     </div>
   `).join('');
+};
+
+window.reviewPension = async function(id, status){
+  const amountInput = document.getElementById(`amount-${id}`);
+  const amount = amountInput ? amountInput.value : null;
+  await fetch(`${window.API_BASE_URL}/api/admin/applications/${id}`, {
+    method: 'PATCH',
+    headers: { "Authorization": `Bearer ${getToken()}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ status, amount })
+  });
+  window.renderAdminPanel('pension-committee');
 };
 </script>

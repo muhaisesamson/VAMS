@@ -38,9 +38,9 @@
   }
 
   async function loadAdminPanel(targetEl, role = getCurrentAdminRole()) {
-    const panel = getPanelForRole(role);
+    const panelConfig = getPanelForRole(role);
     if (!targetEl) return;
-    const response = await fetch(`partials/${panel}`);
+    const response = await fetch(`partials/${panelConfig.panel}`);
     if (!response.ok) {
       targetEl.innerHTML = '<div class="note">Panel is not available yet.</div>';
       return;

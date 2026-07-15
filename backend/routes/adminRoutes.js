@@ -8,6 +8,7 @@ const {
   getVeteranById,
   listDocuments,
   reviewDocument,
+  reviewVeteranStatus,
   listApplications,
   reviewApplication,
   getOverview
@@ -19,6 +20,7 @@ router.get('/veterans', requireRole('doc-verifier', 'pension-committee', 'health
 router.get('/veterans/:id', requireRole('doc-verifier', 'pension-committee', 'healthcare-committee', 'education-committee', 'super-admin'), getVeteranById);
 router.get('/documents', requireRole('doc-verifier', 'super-admin'), listDocuments);
 router.patch('/documents/:id', requireRole('doc-verifier', 'super-admin'), reviewDocument);
+router.patch('/veterans/:id/status', requireRole('doc-verifier', 'super-admin'),reviewVeteranStatus);
 router.get('/applications', requireRole('pension-committee', 'healthcare-committee', 'education-committee', 'super-admin'), listApplications);
 router.patch('/applications/:id', requireRole('pension-committee', 'healthcare-committee', 'education-committee', 'super-admin'), reviewApplication);
 router.get('/overview', requireRole('super-admin'), getOverview);

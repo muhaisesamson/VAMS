@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const { sendVerificationStatusEmail } = require('../utils/mailer');
 
 const roleServiceMap = {
   'pension-committee': 'pension',
@@ -75,6 +76,67 @@ const reviewDocument = async (req, res) => {
     return res.status(200).json({ success: true, message: 'Document updated successfully.', data: result.rows[0] });
   } catch (error) {
     console.error('reviewDocument error:', error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+const reviewVeteranStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, message } = req.body;
+
+    const validStatuses = ['approved', 'rejected', 'info_requested'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: 'status must be approved, rejected, or info_requested.' });
+    }
+
+    if (status === 'info_requested' && (!message || !message.trim())) {
+      return res.status(400).json({ success: false, message: 'Please describe what additional information is needed.' });
+    }
+
+    const result = await db.query(
+      `UPDATE veterans
+       SET verification_status = $1,
+           info_request_message = CASE WHEN $1 = 'info_requested' THEN $2 ELSE NULL END,
+           reviewed_by = $3,
+           reviewed_at = NOW(),
+           updated_at = NOW()
+       WHERE id = $4
+       RETURNING id, full_name, email, verification_status, info_request_message`,
+      [status, message ? message.trim() : null, req.user.id, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Veteran not found.' });
+    }
+
+    const veteran = result.rows[0];
+
+    try {
+      await sendVerificationStatusEmail({
+        to: veteran.email,
+        fullName: veteran.full_name,
+        status,
+        message: veteran.info_request_message
+      });
+    } catch (emailError) {
+      console.error('sendVerificationStatusEmail error:', emailError);
+      return res.status(200).json({
+        success: true,
+        message: 'Status updated, but the notification email could not be sent.',
+        data: veteran,
+        emailSent: false
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Veteran status updated and notification email sent.',
+      data: veteran,
+      emailSent: true
+    });
+  } catch (error) {
+    console.error('reviewVeteranStatus error:', error);
     return res.status(500).json({ success: false, message: 'Server error.' });
   }
 };
@@ -180,6 +242,7 @@ module.exports = {
   getVeteranById,
   listDocuments,
   reviewDocument,
+  reviewVeteranStatus,
   listApplications,
   reviewApplication,
   getOverview

@@ -8,25 +8,42 @@
 window.renderAdminPanel = async function(role){
   const list = document.getElementById('healthcareList');
   if (!list) return;
-  const apps = (await window.mockData.getApplications()).filter((app) => app.type === 'healthcare');
+
+  const response = await fetch(`${window.API_BASE_URL}/api/admin/applications`, {
+    headers: { "Authorization": `Bearer ${getToken()}` }
+  });
+  const result = await response.json();
+  const apps = result.data || [];
+
   list.innerHTML = apps.map((app) => `
     <div class="list-item" style="display:grid; gap:10px">
       <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap">
         <div>
-          <strong>${app.applicant}</strong>
-          <div class="subtle">${app.id} • ${app.submittedAt}</div>
+          <strong>${app.full_name}</strong>
+          <div class="subtle">${app.id} • ${new Date(app.submitted_at).toLocaleDateString()}</div>
         </div>
         <span class="pill blue">${app.status}</span>
       </div>
       <label>
         Coverage level
-        <input type="text" value="${app.coverage || 'Basic'}" />
+        <input type="text" id="coverage-${app.id}" value="${app.coverage_value || 'Basic'}" />
       </label>
       <div style="display:flex; gap:8px; flex-wrap:wrap">
-        <button class="soft-btn" type="button">Approve</button>
-        <button class="ghost-btn" type="button">Reject</button>
+        <button class="soft-btn" type="button" onclick="reviewHealthcare('${app.id}', 'approved')">Approve</button>
+        <button class="ghost-btn" type="button" onclick="reviewHealthcare('${app.id}', 'rejected')">Reject</button>
       </div>
     </div>
   `).join('');
+};
+
+window.reviewHealthcare = async function(id, status){
+  const coverageInput = document.getElementById(`coverage-${id}`);
+  const coverage_value = coverageInput ? coverageInput.value : null;
+  await fetch(`${window.API_BASE_URL}/api/admin/applications/${id}`, {
+    method: 'PATCH',
+    headers: { "Authorization": `Bearer ${getToken()}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ status, coverage_value })
+  });
+  window.renderAdminPanel('healthcare-committee');
 };
 </script>
