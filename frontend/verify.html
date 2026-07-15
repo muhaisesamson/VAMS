@@ -647,11 +647,17 @@ const infoModal = document.getElementById("infoModal");
   });
 
   async function updateVeteranStatus(id, status, message){
+    console.log('🔍 updateVeteranStatus called with:', { id, idType: typeof id, status, statusType: typeof status, message });
+
     const card = listEl.querySelector(`.submission-card[data-id="${id}"]`);
     const buttons = card ? card.querySelectorAll("button[data-action]") : [];
     buttons.forEach((b) => { b.disabled = true; });
     const noteEl = card ? card.querySelector('[data-role="status-note"]') : null;
     if (noteEl) noteEl.textContent = "Saving...";
+
+    const requestBody = { status, message };
+    console.log('🔍 Request body being sent:', JSON.stringify(requestBody));
+    console.log('🔍 Request URL:', `${window.API_BASE_URL}/api/admin/veterans/${id}/status`);
 
     try {
       const res = await fetch(`${window.API_BASE_URL}/api/admin/veterans/${id}/status`, {
@@ -662,7 +668,11 @@ const infoModal = document.getElementById("infoModal");
         },
         body: JSON.stringify({ status, message })
       });
+
+      console.log('🔍 Response status:', res.status);
       const data = await res.json();
+      console.log('🔍 Response body:', data);
+      
       if (!res.ok || !data.success) {
         throw new Error(data.message || "Failed to update status.");
       }

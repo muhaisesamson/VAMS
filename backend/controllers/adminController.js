@@ -85,6 +85,16 @@ const reviewVeteranStatus = async (req, res) => {
     const { id } = req.params;
     const { status, message } = req.body;
 
+    console.log('🔍 reviewVeteranStatus called with:', {
+      id,
+      idType: typeof id,
+      status,
+      statusType: typeof status,
+      message,
+      messageType: typeof message,
+    });
+
+
     const validStatuses = ['approved', 'rejected', 'info_requested'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ success: false, message: 'status must be approved, rejected, or info_requested.' });
@@ -93,6 +103,25 @@ const reviewVeteranStatus = async (req, res) => {
     if (status === 'info_requested' && (!message || !message.trim())) {
       return res.status(400).json({ success: false, message: 'Please describe what additional information is needed.' });
     }
+
+    const queryText = `UPDATE veterans
+       SET verification_status = $1::text,
+           info_request_message = CASE WHEN $1::text = 'info_requested' THEN $2 ELSE NULL END,
+           reviewed_by = $3,
+           reviewed_at = NOW(),
+           updated_at = NOW()
+       WHERE id = $4
+       RETURNING id, full_name, email, verification_status, info_request_message`;
+    const queryParams = [status, message ? message.trim() : null, req.user.id, id];
+
+    console.log('🔍 About to run query:', queryText);
+    console.log('🔍 With params:', queryParams);
+    console.log('🔍 req.user:', req.user);
+
+    const result = await db.query(queryText, queryParams);
+
+    console.log('✅ Query succeeded, rows:', result.rows);
+
 
     const result = await db.query(
       `UPDATE veterans
@@ -136,7 +165,11 @@ const reviewVeteranStatus = async (req, res) => {
       emailSent: true
     });
   } catch (error) {
-    console.error('reviewVeteranStatus error:', error);
+    console.error('❌ reviewVeteranStatus FULL error object:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+    console.error('❌ error.message:', error.message);
+    console.error('❌ error.code:', error.code);
+    console.error('❌ error.detail:', error.detail);
+    console.error('❌ error.position:', error.position);
     return res.status(500).json({ success: false, message: 'Server error.' });
   }
 };
