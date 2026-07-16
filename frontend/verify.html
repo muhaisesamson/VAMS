@@ -348,6 +348,7 @@ hr.sep{
       </div>
 
       <div class="submission-list" id="submissionList"></div>
+      <div class="submission-list" id="applicationList" style="margin-top:28px"></div>
 
       <div class="empty-state" id="emptyState" style="display:none">
         <h3>No submissions in this view</h3>
@@ -374,12 +375,20 @@ hr.sep{
 <script src="js/app.js"></script>
 <script>
 (function(){
-  const allowedRoles = ['doc-verifier', 'super-admin'];
+  const allowedRoles = ['doc-verifier', 'super-admin', 'pension-committee','healthcare-committee', 'education-committee'];
   const userRole = getUserRole();
   if (!userRole || !allowedRoles.includes(userRole)) {
     window.location.href = 'dashboard.html';
     return;
   }
+
+  const roleServiceMap = {
+  'pension-committee': 'pension',
+  'healthcare-committee': 'healthcare',
+  'education-committee': 'education'
+  };
+  const showsDocuments = (userRole === 'doc-verifier' || userRole === 'super-admin');
+  const showsApplications = (userRole === 'super-admin' || !!roleServiceMap[userRole]);
 
   const STATUS = {
     pending:  { label: "Pending review", pillClass: "yellow" },
@@ -398,6 +407,8 @@ hr.sep{
   let submissions = [];
   let activeFilter = "all";
   let summary = null;
+
+  let applications = [];
 
   const listEl = document.getElementById("submissionList");
   const emptyEl = document.getElementById("emptyState");
@@ -480,24 +491,49 @@ hr.sep{
     `;
 
     try {
-      const [veteransRes, documentsRes] = await Promise.all([
-        fetch(`${window.API_BASE_URL}/api/admin/veterans`, { headers: { "Authorization": `Bearer ${getToken()}` } }),
-        fetch(`${window.API_BASE_URL}/api/admin/documents`, { headers: { "Authorization": `Bearer ${getToken()}` } })
-      ]);
-      const veterans = (await veteransRes.json()).data || [];
-      const documents = (await documentsRes.json()).data || [];
+    const calls = [];
+    if (showsDocuments) {
+      calls.push(fetch(`${window.API_BASE_URL}/api/admin/veterans`, { headers: { "Authorization": `Bearer ${getToken()}` } }));
+      calls.push(fetch(`${window.API_BASE_URL}/api/admin/documents`, { headers: { "Authorization": `Bearer ${getToken()}` } }));
+    }
+    if (showsApplications) {
+      calls.push(fetch(`${window.API_BASE_URL}/api/admin/applications`, { headers: { "Authorization": `Bearer ${getToken()}` } }));
+    }
 
+    const responses = await Promise.all(calls);
+    let i = 0, veterans = [], documents = [];
+
+    if (showsDocuments) {
+      veterans = (await responses[i++].json()).data || [];
+      documents = (await responses[i++].json()).data || [];
       submissions = veterans.map((vet) => mapVeteranToSubmission(vet, documents.filter((doc) => doc.veteran_id === vet.id)));
-      summary = { total_veterans: veterans.length, pending_verification: submissions.filter((sub) => sub.status === "pending").length, verified: submissions.filter((sub) => sub.status === "approved").length, rejected: submissions.filter((sub) => sub.status === "rejected").length };
-      renderAll();
+      summary = {
+        total_veterans: veterans.length,
+        pending_verification: submissions.filter((s) => s.status === "pending").length,
+        verified: submissions.filter((s) => s.status === "approved").length,
+        rejected: submissions.filter((s) => s.status === "rejected").length
+      };
+    } else {
+      // committee-only roles: hide the document board and its filter bar entirely
+      document.querySelector('.cards-4').style.display = 'none';
+      document.querySelector('.filter-bar').style.display = 'none';
+      listEl.style.display = 'none';
+    }
+
+    if (showsApplications) {
+      applications = (await responses[i++].json()).data || [];
+    }
+
+    if (showsDocuments) renderAll();
+    renderApplications();
     } catch (error) {
       console.error("Verification page load failed:", error);
       listEl.innerHTML = `
-        <div class="empty-state">
-          <h3>Could not load submissions</h3>
-          <p>${error.message || "Please check your connection and try again."}</p>
-        </div>
-      `;
+      <div class="empty-state">
+        <h3>Could not load submissions</h3>
+        <p>${error.message || "Please check your connection and try again."}</p>
+      </div>
+  `;
     }
   }
 
@@ -610,7 +646,71 @@ hr.sep{
     applyFilter();
   }
 
-const infoModal = document.getElementById("infoModal");
+  function renderApplications(){
+    const appListEl = document.getElementById('applicationList');
+    if (!appListEl || !showsApplications) return;
+
+    const scopedApps = userRole === 'super-admin'
+      ? applications
+      : applications.filter((a) => a.service_type === roleServiceMap[userRole]);
+
+    if (scopedApps.length === 0) {
+      appListEl.innerHTML = `
+        <div class="empty-state">
+          <h3>No applications</h3>
+          <p>No service applications to review right now.</p>
+        </div>`;
+      return;
+    }
+
+    appListEl.innerHTML = scopedApps.map(renderApplicationCard).join('');
+  }
+
+  function renderApplicationCard(app){
+    const isPension = app.service_type === 'pension';
+    const pillClass = app.status === 'approved' ? 'green' : app.status === 'rejected' ? 'red' : 'yellow';
+    return `
+      <article class="submission-card" data-app-id="${app.id}">
+        <div class="sub-head">
+          <div class="sub-identity">
+            <div>
+              <h3>${app.full_name}</h3>
+              <div class="sub-meta">
+                <span>${app.service_type}</span>
+                <span>Submitted: ${formatDate(app.submitted_at)}</span>
+              </div>
+            </div>
+          </div>
+          <span class="pill ${pillClass}">${app.status}</span>
+        </div>
+        <hr class="sep" />
+        ${isPension
+          ? `<label>Approved amount<br><input type="number" id="amount-${app.id}" value="${app.amount || 0}" /></label>`
+          : `<label>Coverage<br><input type="text" id="coverage-${app.id}" value="${app.coverage_value || ''}" /></label>`}
+        <div class="sub-actions">
+          <button class="cta-btn" type="button" onclick="reviewApplication('${app.id}', 'approved')" ${app.status === 'approved' ? 'disabled' : ''}>Approve</button>
+          <button class="danger-btn" type="button" onclick="reviewApplication('${app.id}', 'rejected')" ${app.status === 'rejected' ? 'disabled' : ''}>Reject</button>
+        </div>
+      </article>
+    `;
+  }
+
+  window.reviewApplication = async function(id, status){
+    const amountInput = document.getElementById(`amount-${id}`);
+    const coverageInput = document.getElementById(`coverage-${id}`);
+    const body = { status };
+    if (amountInput) body.amount = amountInput.value;
+    if (coverageInput) body.coverage_value = coverageInput.value;
+
+    await fetch(`${window.API_BASE_URL}/api/admin/applications/${id}`, {
+      method: 'PATCH',
+      headers: { "Authorization": `Bearer ${getToken()}`, "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    await loadSubmissions();
+  };
+
+  const infoModal = document.getElementById("infoModal");
   const infoMessageInput = document.getElementById("infoMessage");
   const infoModalError = document.getElementById("infoModalError");
   const infoSendBtn = document.getElementById("infoSendBtn");
