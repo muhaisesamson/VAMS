@@ -64,7 +64,62 @@ async function sendVerificationStatusEmail({ to, fullName, status, message }) {
   await sgMail.send(mailOptions);
 }
 
-module.exports = { sendVerificationStatusEmail };
+const APPLICATION_STATUS_CONTENT = {
+  approved: {
+    subject: (service) => `Your ${service} application has been approved`,
+    heading: 'Application approved',
+    body: (name, service, amount, coverageValue) => {
+      let extra = '';
+      if (amount) extra = ` Your approved amount is UGX ${amount}.`;
+      if (coverageValue) extra = ` Your approved coverage: ${coverageValue}.`;
+      return `Dear ${name},\n\nYour ${service} application has been reviewed and approved.${extra}\n\n` +
+        `Please log in to your VAMS account for full details.`;
+    }
+  },
+  rejected: {
+    subject: (service) => `Update on your ${service} application`,
+    heading: 'Application rejected',
+    body: (name, service) =>
+      `Dear ${name},\n\nAfter reviewing your ${service} application, we are unable to approve it at this time. ` +
+      `If you believe this is a mistake, please contact us for more details.`
+  }
+};
+
+/**
+ * Sends a status-change notification email for a service application.
+ * @param {Object} params
+ * @param {string} params.to
+ * @param {string} params.fullName
+ * @param {string} params.serviceType - 'pension' | 'healthcare' | 'education'
+ * @param {'approved'|'rejected'} params.status
+ * @param {number} [params.amount]
+ * @param {string} [params.coverageValue]
+ */
+async function sendApplicationStatusEmail({ to, fullName, serviceType, status, amount, coverageValue }) {
+  const content = APPLICATION_STATUS_CONTENT[status];
+  if (!content) throw new Error(`No application email template for status: ${status}`);
+
+  const bodyText = content.body(fullName, serviceType, amount, coverageValue);
+  const footer = `Message from the ${SENDER_LABEL}`;
+
+  await sgMail.send({
+    from: { email: process.env.SMTP_FROM, name: SENDER_LABEL },
+    to,
+    subject: content.subject(serviceType),
+    text: `${bodyText}\n\n— ${footer}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; color:#2B2B2B; line-height:1.6; max-width:520px;">
+        <h2 style="color:#3E5C3A; margin-bottom:12px;">${content.heading}</h2>
+        <p style="white-space:pre-line;">${bodyText}</p>
+        <hr style="border:none;border-top:1px solid #D9D7CF;margin:20px 0;" />
+        <p style="color:#666666;font-size:0.85rem;">${footer} (Uganda Veterans Affairs Management System)</p>
+      </div>
+    `
+  });
+}
+
+module.exports = { sendVerificationStatusEmail, sendApplicationStatusEmail };
+
 
 
 

@@ -1,5 +1,5 @@
 const db = require('../config/db');
-const { sendVerificationStatusEmail } = require('../utils/mailer');
+const { sendVerificationStatusEmail, sendApplicationStatusEmail } = require('../utils/mailer');
 
 const roleServiceMap = {
   'pension-committee': 'pension',
@@ -221,7 +221,13 @@ const reviewApplication = async (req, res) => {
     }
 
     const result = await db.query(
-      `UPDATE applications SET status = $1, amount = COALESCE($2, amount), coverage_value = COALESCE($3, coverage_value), reviewed_by = $4, reviewed_at = NOW() WHERE id = $5 RETURNING id, service_type, status, amount, coverage_value`,
+      `UPDATE applications a
+       SET status = $1, amount = COALESCE($2, a.amount), coverage_value = COALESCE($3, a.coverage_value),
+           reviewed_by = $4, reviewed_at = NOW()
+       FROM veterans v
+       WHERE a.id = $5 AND v.id = a.veteran_id
+       RETURNING a.id, a.service_type, a.status, a.amount, a.coverage_value,
+                 v.full_name, v.email`,
       [status, amount || null, coverage_value || null, req.user.id, id]
     );
 
@@ -229,7 +235,31 @@ const reviewApplication = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Application not found.' });
     }
 
-    return res.status(200).json({ success: true, message: 'Application updated successfully.', data: result.rows[0] });
+    const application = result.rows[0];
+    let emailSent = true;
+
+    if (status === 'approved' || status === 'rejected') {
+      try {
+        await sendApplicationStatusEmail({
+          to: application.email,
+          fullName: application.full_name,
+          serviceType: application.service_type,
+          status,
+          amount: application.amount,
+          coverageValue: application.coverage_value
+        });
+      } catch (emailError) {
+        console.error('sendApplicationStatusEmail error:', emailError);
+        emailSent = false;
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Application updated successfully.',
+      data: application,
+      emailSent
+    });
   } catch (error) {
     console.error('reviewApplication error:', error);
     return res.status(500).json({ success: false, message: 'Server error.' });
