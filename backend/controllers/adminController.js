@@ -65,7 +65,12 @@ const reviewDocument = async (req, res) => {
     }
 
     const result = await db.query(
-      `UPDATE documents SET status = $1, reviewed_by = $2, reviewed_at = NOW() WHERE id = $3 RETURNING id, status, reviewed_by, reviewed_at`,
+      `UPDATE documents d
+       SET status = $1, reviewed_by = $2, reviewed_at = NOW()
+       FROM veterans v
+       WHERE d.id = $3 AND v.id = d.veteran_id
+       RETURNING d.id, d.status, d.reviewed_by, d.reviewed_at, d.doc_type,
+                 v.id AS veteran_id, v.full_name, v.email`,
       [status, req.user.id, id]
     );
 
