@@ -13,7 +13,16 @@ window.renderAdminPanel = async function(role){
     headers: { "Authorization": `Bearer ${getToken()}` }
   });
   const result = await response.json();
-  const apps = result.data || [];
+  const apps = (result.data || []).filter(app => app.service_type === 'pension');
+  
+
+  document.getElementById('pensionCount').textContent = `(${apps.length})`;
+  
+  if (apps.length === 0) {
+  list.innerHTML = `<p class="subtle">No pension applications submitted yet.</p>`;
+  return;
+  }
+
 
   list.innerHTML = apps.map((app) => `
     <div class="list-item" style="display:grid; gap:10px">
