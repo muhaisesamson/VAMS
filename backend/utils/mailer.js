@@ -1,23 +1,6 @@
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 
-let transporter = null;
-
-function getTransporter() {
-  if (transporter) return transporter;
-
-  const port = Number(process.env.SMTP_PORT) || 587;
-  transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port,
-    secure: port === 465, // true for port 465, false for 587/others (STARTTLS)
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
-  });
-
-  return transporter;
-}
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const SENDER_LABEL = 'Verification Board of VAMS';
 
@@ -61,7 +44,10 @@ async function sendVerificationStatusEmail({ to, fullName, status, message }) {
   const footer = `Message from the ${SENDER_LABEL}`;
 
   const mailOptions = {
-    from: `"${SENDER_LABEL}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+    from: {
+      email: process.env.SMTP_FROM,
+      name: SENDER_LABEL
+    },
     to,
     subject: content.subject,
     text: `${bodyText}\n\n— ${footer}`,
@@ -75,7 +61,36 @@ async function sendVerificationStatusEmail({ to, fullName, status, message }) {
     `
   };
 
-  await getTransporter().sendMail(mailOptions);
+  await sgMail.send(mailOptions);
 }
 
 module.exports = { sendVerificationStatusEmail };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
