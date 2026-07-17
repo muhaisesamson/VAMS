@@ -141,6 +141,25 @@ button,input,select,textarea{font:inherit}
 .dashboard-card.rejected .num{color:var(--danger)}
 .dashboard-card.total .num{color:var(--primary)}
 
+/* search icon */
+.search-sort-bar{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:22px;
+}
+.search-sort-bar input[type="text"]{
+  flex:1; min-width:240px; border:1px solid var(--border); border-radius:999px;
+  padding:11px 18px; background:#fff; color:var(--text);
+}
+.search-sort-bar input[type="text"]:focus{
+  outline:2px solid rgba(62,92,58,.3); outline-offset:1px;
+}
+.search-sort-bar select{
+  border:1px solid var(--border); border-radius:999px; padding:11px 16px;
+  background:#fff; color:var(--primary); font-weight:700; cursor:pointer;
+}
+@media (max-width: 720px){
+  .search-sort-bar{flex-direction:column; align-items:stretch}
+}
+
 /* Filter bar */
 .filter-bar{
   display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:22px;
@@ -338,6 +357,16 @@ hr.sep{
         </div>
       </section>
 
+      <div class="search-sort-bar" id="searchSortBar">
+        <input type="text" id="searchInput" placeholder="Search by name, service number, national ID, email or phone…" />
+        <select id="sortSelect">
+          <option value="date-desc">Date submitted (Newest first)</option>
+          <option value="date-asc">Date submitted (Oldest first)</option>
+          <option value="name-asc">Name (A–Z)</option>
+          <option value="name-desc">Name (Z–A)</option>
+        </select>
+      </div>
+
       <div class="filter-bar" role="tablist" aria-label="Filter submissions by status">
         <span class="label">Show:</span>
         <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
@@ -406,6 +435,8 @@ hr.sep{
 
   let submissions = [];
   let activeFilter = "all";
+  let searchTerm = "";
+  let sortState = { key: "date", dir: "desc" };
   let summary = null;
 
   let applications = [];
@@ -571,7 +602,7 @@ hr.sep{
     const isInfo = sub.status === "info";
 
     return `
-      <article class="submission-card" data-id="${sub.id}" data-status="${sub.status}">
+      <article class="submission-card" data-id="${sub.id}" data-status="${sub.status}" data-search="${submissionSearchText(sub)}">
         <div class="sub-head">
           <div class="sub-identity">
             <div class="avatar" aria-hidden="true">${initials(sub.firstName, sub.lastName)}</div>
@@ -632,18 +663,53 @@ hr.sep{
 
   function applyFilter(){
     const cards = listEl.querySelectorAll(".submission-card");
+    const term = searchTerm.trim().toLowerCase();
     let visibleCount = 0;
     cards.forEach((card) => {
       const status = card.getAttribute("data-status");
-      const match = activeFilter === "all" || status === activeFilter;
+      const searchText = card.getAttribute("data-search") || "";
+      const statusMatch = activeFilter === "all" || status === activeFilter;
+      const searchMatch = !term || searchText.includes(term);
+      const match = statusMatch && searchMatch;
       card.classList.toggle("is-hidden", !match);
       if (match) visibleCount++;
     });
     emptyEl.style.display = visibleCount === 0 ? "block" : "none";
   }
 
+  function sortList(list, nameGetter, dateGetter){
+    const sorted = [...list];
+    sorted.sort((a, b) => {
+      let cmp = 0;
+      if (sortState.key === "name") {
+        cmp = nameGetter(a).localeCompare(nameGetter(b));
+      } else {
+        cmp = new Date(dateGetter(a) || 0) - new Date(dateGetter(b) || 0);
+      }
+      return sortState.dir === "asc" ? cmp : -cmp;
+    });
+    return sorted;
+  }
+
+  function escapeAttr(str){
+    return String(str || "").replace(/"/g, "&quot;");
+  }
+
+  function submissionSearchText(sub){
+    return escapeAttr(
+      [sub.firstName, sub.lastName, sub.serviceNumber, sub.nationalId, sub.email, sub.phone]
+        .filter(Boolean).join(" ").toLowerCase()
+    );
+  }
+
+  function applicationSearchText(app){
+    return [app.full_name, app.service_type, app.service_number, app.national_id, app.email, app.phone]
+      .filter(Boolean).join(" ").toLowerCase();
+  }
+
   function renderAll(){
-    listEl.innerHTML = submissions.map(renderCard).join("");
+    const sorted = sortList(submissions, (s) => `${s.firstName} ${s.lastName}`.trim().toLowerCase(), (s) => s.registrationDate);
+    listEl.innerHTML = sorted.map(renderCard).join("");
     listEl.querySelectorAll('[data-role="status-note"]').forEach((el) => {
       const card = el.closest(".submission-card");
       const sub = submissions.find((s) => s.id === card.getAttribute("data-id"));
@@ -656,20 +722,27 @@ hr.sep{
   function renderApplications(){
     const appListEl = document.getElementById('applicationList');
     if (!appListEl || !showsApplications) return;
-
-    const scopedApps = userRole === 'super-admin'
+    
+    let scopedApps = userRole === 'super-admin'
       ? applications
       : applications.filter((a) => a.service_type === roleServiceMap[userRole]);
-
+    
+    const term = searchTerm.trim().toLowerCase();
+    if (term) {
+      scopedApps = scopedApps.filter((a) => applicationSearchText(a).includes(term));
+    }
+  
+    scopedApps = sortList(scopedApps, (a) => (a.full_name || "").toLowerCase(), (a) => a.submitted_at);
+  
     if (scopedApps.length === 0) {
       appListEl.innerHTML = `
         <div class="empty-state">
           <h3>No applications</h3>
-          <p>No service applications to review right now.</p>
+          <p>${term ? "No applications match your search." : "No service applications to review right now."}</p>
         </div>`;
       return;
     }
-
+  
     appListEl.innerHTML = scopedApps.map(renderApplicationCard).join('');
   }
 
@@ -708,7 +781,7 @@ hr.sep{
       </article>
     `;
   }
-  
+
   window.reviewApplication = async function(id, status){
     const amountInput = document.getElementById(`amount-${id}`);
     const coverageInput = document.getElementById(`coverage-${id}`);
@@ -850,6 +923,23 @@ hr.sep{
       activeFilter = btn.getAttribute("data-filter");
       applyFilter();
     });
+  });
+
+
+  const searchInput = document.getElementById("searchInput");
+  const sortSelect = document.getElementById("sortSelect");
+
+  searchInput.addEventListener("input", function(){
+    searchTerm = this.value;
+    if (showsDocuments) applyFilter();
+    if (showsApplications) renderApplications();
+  });
+
+  sortSelect.addEventListener("change", function(){
+    const [key, dir] = this.value.split("-");
+    sortState = { key, dir };
+    if (showsDocuments) renderAll();
+    if (showsApplications) renderApplications();
   });
 
   loadSubmissions();
