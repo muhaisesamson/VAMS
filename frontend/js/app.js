@@ -72,7 +72,21 @@ function updateNavigation() {
     const nav = document.querySelector(".nav-links");
     if (!nav) return;
 
-    if (user) {
+    const adminRoles = ['super-admin', 'doc-verifier', 'pension-committee', 'healthcare-committee', 'education-committee'];
+    const isAdmin = user && adminRoles.includes(user.role);
+
+    if (isAdmin) {
+        nav.innerHTML = `
+            <a data-nav href="admin-dashboard.html">Dashboard</a>
+            <a href="#" id="logoutBtn">Logout</a>
+        `;
+        document.getElementById("logoutBtn").addEventListener("click", function (e) {
+            e.preventDefault();
+            localStorage.removeItem("vamsToken");
+            localStorage.removeItem("vamsUser");
+            window.location.href = "index.html";
+        });
+    } else if (user) {
         nav.innerHTML = `
             <a data-nav href="dashboard.html">Dashboard</a>
             <a data-nav href="services.html">Services</a>
