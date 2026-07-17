@@ -472,6 +472,10 @@ hr.sep{
       firstName: vet.full_name ? vet.full_name.split(" ")[0] : "",
       lastName: vet.full_name ? vet.full_name.split(" ").slice(1).join(" ") : "",
       serviceNumber: vet.service_number || "",
+      nationalId: vet.national_id || "",
+      serviceBranch: vet.service_branch || "",
+      rank: vet.rank || "",
+      yearsServed: vet.years_served != null ? vet.years_served : "",
       phone: vet.phone || "",
       email: vet.email || "",
       registrationDate: vet.created_at || "",
@@ -575,6 +579,9 @@ hr.sep{
               <h3>${fullName}</h3>
               <div class="sub-meta">
                 <span>Service No: ${sub.serviceNumber || "—"}</span>
+                <span>National ID: ${sub.nationalId || "—"}</span>
+                <span>${sub.serviceBranch || "—"}${sub.rank ? " · " + sub.rank : ""}</span>
+                <span>${sub.yearsServed !== "" ? sub.yearsServed + " yrs served" : "—"}</span>
                 <span>${sub.phone || "—"}</span>
                 <span>${sub.email || "—"}</span>
                 <span>Registered: ${formatDate(sub.registrationDate)}</span>
@@ -676,8 +683,15 @@ hr.sep{
             <div>
               <h3>${app.full_name}</h3>
               <div class="sub-meta">
-                <span>${app.service_type}</span>
+                <span>Applying for: ${app.service_type}</span>
+                <span>Service No: ${app.service_number || "—"}</span>
+                <span>National ID: ${app.national_id || "—"}</span>
+                <span>${app.service_branch || "—"}${app.rank ? " · " + app.rank : ""}</span>
+                <span>${app.years_served != null ? app.years_served + " yrs served" : "—"}</span>
+                <span>${app.phone || "—"}</span>
+                <span>${app.email || "—"}</span>
                 <span>Submitted: ${formatDate(app.submitted_at)}</span>
+                ${app.reviewed_at ? `<span>Reviewed: ${formatDate(app.reviewed_at)}</span>` : ""}
               </div>
             </div>
           </div>
@@ -694,7 +708,7 @@ hr.sep{
       </article>
     `;
   }
-
+  
   window.reviewApplication = async function(id, status){
     const amountInput = document.getElementById(`amount-${id}`);
     const coverageInput = document.getElementById(`coverage-${id}`);

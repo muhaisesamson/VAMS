@@ -186,7 +186,13 @@ const listApplications = async (req, res) => {
       }
     }
 
-    let query = `SELECT a.id, a.veteran_id, a.service_type, a.status, a.amount, a.coverage_value, a.submitted_at, a.reviewed_at, v.full_name FROM applications a JOIN veterans v ON v.id = a.veteran_id`;
+    let query = `SELECT a.id, a.veteran_id, a.service_type, a.status, a.amount, a.coverage_value,
+                    a.submitted_at, a.reviewed_at,
+                    v.full_name, v.email, v.phone, v.service_number, v.national_id,
+                    v.service_branch, v.rank, v.years_served
+             FROM applications a JOIN veterans v ON v.id = a.veteran_id`;
+
+             
     const params = [];
     if (effectiveService) {
       query += ' WHERE a.service_type = $1';
