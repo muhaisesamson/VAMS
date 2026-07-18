@@ -10,7 +10,7 @@ const roleServiceMap = {
 const getAllVeterans = async (req, res) => {
   try {
     const result = await db.query(
-      `SELECT id, full_name, email, phone, service_number, national_id, service_branch, rank, years_served, verification_status, created_at
+      `SELECT id, full_name, email, phone, service_number, national_id, service_branch, rank, years_served, gender, verification_status, created_at
        FROM veterans ORDER BY created_at DESC`
     );
     return res.status(200).json({ success: true, data: result.rows });
@@ -189,7 +189,7 @@ const listApplications = async (req, res) => {
     let query = `SELECT a.id, a.veteran_id, a.service_type, a.status, a.amount, a.coverage_value,
                     a.submitted_at, a.reviewed_at,
                     v.full_name, v.email, v.phone, v.service_number, v.national_id,
-                    v.service_branch, v.rank, v.years_served
+                    v.service_branch, v.rank, v.years_served, v.gender
              FROM applications a JOIN veterans v ON v.id = a.veteran_id`;
 
              

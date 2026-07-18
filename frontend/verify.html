@@ -160,6 +160,10 @@ button,input,select,textarea{font:inherit}
   .search-sort-bar{flex-direction:column; align-items:stretch}
 }
 
+.result-count{
+  color:var(--muted); font-size:.85rem; font-weight:600; margin:14px 2px 0;
+}
+
 /* Filter bar */
 .filter-bar{
   display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:22px;
@@ -376,7 +380,12 @@ hr.sep{
         <button class="filter-btn" data-filter="info" role="tab" aria-selected="false">Info requested</button>
       </div>
 
+      <div class="result-count" id="docResultCount"></div>
+
       <div class="submission-list" id="submissionList"></div>
+
+      <div class="result-count" id="appResultCount"></div>
+
       <div class="submission-list" id="applicationList" style="margin-top:28px"></div>
 
       <div class="empty-state" id="emptyState" style="display:none">
@@ -507,6 +516,7 @@ hr.sep{
       serviceBranch: vet.service_branch || "",
       rank: vet.rank || "",
       yearsServed: vet.years_served != null ? vet.years_served : "",
+      gender: vet.gender || "",
       phone: vet.phone || "",
       email: vet.email || "",
       registrationDate: vet.created_at || "",
@@ -613,6 +623,7 @@ hr.sep{
                 <span>National ID: ${sub.nationalId || "—"}</span>
                 <span>${sub.serviceBranch || "—"}${sub.rank ? " · " + sub.rank : ""}</span>
                 <span>${sub.yearsServed !== "" ? sub.yearsServed + " yrs served" : "—"}</span>
+                <span>${sub.gender || "Gender not on file"}</span>
                 <span>${sub.phone || "—"}</span>
                 <span>${sub.email || "—"}</span>
                 <span>Registered: ${formatDate(sub.registrationDate)}</span>
@@ -675,6 +686,13 @@ hr.sep{
       if (match) visibleCount++;
     });
     emptyEl.style.display = visibleCount === 0 ? "block" : "none";
+
+    const countEl = document.getElementById("docResultCount");
+    if (countEl) {
+      countEl.textContent = term 
+      ? `${visibleCount} result${visibleCount === 1 ? "" : "s"} for "${searchTerm.trim()}"`
+      : `${visibleCount} of ${cards.length} veteran${cards.length === 1 ? "" : "s"}`;
+    }
   }
 
   function sortList(list, nameGetter, dateGetter){
@@ -697,13 +715,13 @@ hr.sep{
 
   function submissionSearchText(sub){
     return escapeAttr(
-      [sub.firstName, sub.lastName, sub.serviceNumber, sub.nationalId, sub.email, sub.phone]
+      [sub.firstName, sub.lastName, sub.serviceNumber, sub.nationalId, sub.email, sub.phone, sub.gender]
         .filter(Boolean).join(" ").toLowerCase()
     );
   }
 
   function applicationSearchText(app){
-    return [app.full_name, app.service_type, app.service_number, app.national_id, app.email, app.phone]
+    return [app.full_name, app.service_type, app.service_number, app.national_id, app.email, app.phone, app.gender]
       .filter(Boolean).join(" ").toLowerCase();
   }
 
@@ -733,7 +751,14 @@ hr.sep{
     }
   
     scopedApps = sortList(scopedApps, (a) => (a.full_name || "").toLowerCase(), (a) => a.submitted_at);
-  
+    
+    const countEl = document.getElementById("appResultCount");
+    if (countEl) {
+      countEl.textContent = term
+        ? `${scopedApps.length} result${scopedApps.length === 1 ? "" : "s"} for "${searchTerm.trim()}"`
+        : `${scopedApps.length} of ${totalScoped} application${totalScoped === 1 ? "" : "s"}`;
+    }
+
     if (scopedApps.length === 0) {
       appListEl.innerHTML = `
         <div class="empty-state">
@@ -761,6 +786,7 @@ hr.sep{
                 <span>National ID: ${app.national_id || "—"}</span>
                 <span>${app.service_branch || "—"}${app.rank ? " · " + app.rank : ""}</span>
                 <span>${app.years_served != null ? app.years_served + " yrs served" : "—"}</span>
+                <span>${app.gender || "Gender not on file"}</span>
                 <span>${app.phone || "—"}</span>
                 <span>${app.email || "—"}</span>
                 <span>Submitted: ${formatDate(app.submitted_at)}</span>

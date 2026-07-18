@@ -128,7 +128,8 @@ const veteranRegister = async (req, res) => {
       national_id,
       service_branch,
       rank,
-      years_served
+      years_served,
+      gender
     } = req.body;
 
     const existingEmail = await client.query('SELECT id FROM veterans WHERE email = $1', [email]);
@@ -139,9 +140,9 @@ const veteranRegister = async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
     const veteranResult = await client.query(
-      `INSERT INTO veterans (full_name, email, password_hash, phone, service_number, national_id, service_branch, rank, years_served, verification_status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'pending') RETURNING id, full_name, email, verification_status`,
-      [full_name, email, passwordHash, phone, service_number, national_id, service_branch, rank, years_served]
+      `INSERT INTO veterans (full_name, email, password_hash, phone, service_number, national_id, service_branch, rank, years_served, verification_status, gender)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'pending', $10) RETURNING id, full_name, email, verification_status`,
+      [full_name, email, passwordHash, phone, service_number, national_id, service_branch, rank, years_served, gender]
     );
 
     const insertedVeteran = veteranResult.rows[0];
