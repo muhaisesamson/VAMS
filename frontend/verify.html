@@ -745,6 +745,8 @@ hr.sep{
       ? applications
       : applications.filter((a) => a.service_type === roleServiceMap[userRole]);
     
+    const totalScoped = scopedApps.length;
+
     const term = searchTerm.trim().toLowerCase();
     if (term) {
       scopedApps = scopedApps.filter((a) => applicationSearchText(a).includes(term));
