@@ -117,6 +117,19 @@ const submitApplication = async (req, res) => {
       return res.status(400).json({ success: false, message: 'service_type is required.' });
     }
 
+    const veteranResult = await db.query('SELECT verification_status FROM veterans WHERE id = $1', [req.user.id]);
+    if (veteranResult.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Veteran not found.' });
+    }
+
+    if (veteranResult.rows[0].verification_status !== 'approved') {
+      return res.status(403).json({
+        success: false,
+        code: 'NOT_VERIFIED',
+        message: 'Your account must be verified before you can apply for services. Please wait for an admin to approve your registration.'
+      });
+    }
+
     const result = await db.query(
       `INSERT INTO applications (veteran_id, service_type, amount, coverage_value, status)
        VALUES ($1, $2, $3, $4, 'pending') RETURNING id, service_type, status, amount, coverage_value, submitted_at`,

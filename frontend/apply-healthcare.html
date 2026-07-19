@@ -50,11 +50,38 @@
         </form>
       </div>
     </div>
+    <div class="modal-overlay" id="notVerifiedModal">
+      <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="notVerifiedTitle">
+        <h3 id="notVerifiedTitle">Verification pending</h3>
+        <p>Your account hasn't been verified yet, so you can't apply for services until an admin approves your registration. Please check back once you've been verified.</p>
+        <button class="cta-btn" id="notVerifiedOkBtn" type="button">Okay</button>
+      </div>
+    </div>
   </main>
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
   <script>
     requireAuth();
+    const notVerifiedModal = document.getElementById('notVerifiedModal');
+    document.getElementById('notVerifiedOkBtn').addEventListener('click', function(){
+      notVerifiedModal.classList.remove('is-open');
+      window.location.href = 'dashboard.html';
+    });
+    
+    (async function checkVerification(){
+      try {
+        const res = await fetch(`${BASE_URL}/api/veteran/profile`, {
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        const data = await res.json();
+        if (data.success && data.data.verification_status !== 'approved') {
+          notVerifiedModal.classList.add('is-open');
+          document.getElementById('submitBtn').disabled = true;
+        }
+      } catch (err) {
+        console.error('Verification check failed:', err);
+      }
+    })();
     const user = getUser();
     if (user) document.getElementById('applicantName').value = user.fullName || user.full_name || user.email;
 
@@ -91,6 +118,11 @@
         }
 
         const data = await response.json();
+
+        if (!response.ok && data.code === 'NOT_VERIFIED') {
+          notVerifiedModal.classList.add('is-open');
+          return;
+        }
 
         if (!response.ok || !data.success) {
           setMessage(msg, data.message || 'Could not submit application.', 'error');

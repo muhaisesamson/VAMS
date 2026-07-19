@@ -371,13 +371,20 @@ hr.sep{
         </select>
       </div>
 
-      <div class="filter-bar" role="tablist" aria-label="Filter submissions by status">
+      <div class="filter-bar" id="statusFilterBar" role="tablist" aria-label="Filter submissions by status">
         <span class="label">Show:</span>
         <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
         <button class="filter-btn" data-filter="pending" role="tab" aria-selected="false">Pending</button>
         <button class="filter-btn" data-filter="approved" role="tab" aria-selected="false">Approved</button>
         <button class="filter-btn" data-filter="rejected" role="tab" aria-selected="false">Rejected</button>
         <button class="filter-btn" data-filter="info" role="tab" aria-selected="false">Info requested</button>
+      </div>
+
+      <div class="filter-bar" id="genderFilterBar" role="tablist" aria-label="Filter by gender">
+        <span class="label">Gender:</span>
+        <button class="filter-btn active" data-gender-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="filter-btn" data-gender-filter="Male" role="tab" aria-selected="false">Male</button>
+        <button class="filter-btn" data-gender-filter="Female" role="tab" aria-selected="false">Female</button>
       </div>
 
       <div class="result-count" id="docResultCount"></div>
@@ -444,6 +451,7 @@ hr.sep{
 
   let submissions = [];
   let activeFilter = "all";
+  let genderFilter = "all";
   let searchTerm = "";
   let sortState = { key: "date", dir: "desc" };
   let summary = null;
@@ -561,7 +569,7 @@ hr.sep{
     } else {
       // committee-only roles: hide the document board and its filter bar entirely
       document.querySelector('.cards-4').style.display = 'none';
-      document.querySelector('.filter-bar').style.display = 'none';
+      document.getElementById('statusFilterBar').style.display = 'none';
       listEl.style.display = 'none';
     }
 
@@ -612,7 +620,7 @@ hr.sep{
     const isInfo = sub.status === "info";
 
     return `
-      <article class="submission-card" data-id="${sub.id}" data-status="${sub.status}" data-search="${submissionSearchText(sub)}">
+      <article class="submission-card" data-id="${sub.id}" data-status="${sub.status}" data-gender="${escapeAttr(sub.gender)}" data-search="${submissionSearchText(sub)}">
         <div class="sub-head">
           <div class="sub-identity">
             <div class="avatar" aria-hidden="true">${initials(sub.firstName, sub.lastName)}</div>
@@ -680,6 +688,7 @@ hr.sep{
       const status = card.getAttribute("data-status");
       const searchText = card.getAttribute("data-search") || "";
       const statusMatch = activeFilter === "all" || status === activeFilter;
+      const genderMatch = genderFilter === "all" || gender === genderFilter;
       const searchMatch = !term || searchText.includes(term);
       const match = statusMatch && searchMatch;
       card.classList.toggle("is-hidden", !match);
@@ -746,6 +755,10 @@ hr.sep{
       : applications.filter((a) => a.service_type === roleServiceMap[userRole]);
     
     const totalScoped = scopedApps.length;
+
+    if (genderFilter !== "all") {
+      scopedApps = scopedApps.filter((a) => a.gender === genderFilter);
+    }
 
     const term = searchTerm.trim().toLowerCase();
     if (term) {
@@ -940,9 +953,9 @@ hr.sep{
     handleViewClick(e);
   });
 
-  document.querySelectorAll(".filter-btn").forEach((btn) => {
+  document.querySelectorAll("#statusFilterBar .filter-btn").forEach((btn) => {
     btn.addEventListener("click", function(){
-      document.querySelectorAll(".filter-btn").forEach((b) => {
+      document.querySelectorAll("#statusFilterBar .filter-btn").forEach((b) => {
         b.classList.remove("active");
         b.setAttribute("aria-selected", "false");
       });
@@ -950,6 +963,20 @@ hr.sep{
       btn.setAttribute("aria-selected", "true");
       activeFilter = btn.getAttribute("data-filter");
       applyFilter();
+    });
+  });
+
+  document.querySelectorAll("#genderFilterBar .filter-btn").forEach((btn) => {
+    btn.addEventListener("click", function(){
+      document.querySelectorAll("#genderFilterBar .filter-btn").forEach((b) => {
+        b.classList.remove("active");
+        b.setAttribute("aria-selected", "false");
+      });
+      btn.classList.add("active");
+      btn.setAttribute("aria-selected", "true");
+      genderFilter = btn.getAttribute("data-gender-filter");
+      if (showsDocuments) applyFilter();
+      if (showsApplications) renderApplications();
     });
   });
 

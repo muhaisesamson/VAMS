@@ -343,3 +343,16 @@ hr.sep{
   color: var(--success);
   border-color: rgba(31, 138, 91, 0.2);
 }
+
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(20,20,20,.45);
+  display:none; align-items:center; justify-content:center; z-index:200; padding:20px;
+}
+.modal-overlay.is-open{display:flex}
+.modal-box{
+  background:var(--surface); border-radius:var(--radius); padding:26px;
+  max-width:440px; width:100%; box-shadow:var(--shadow); border:1px solid var(--border);
+  text-align:center;
+}
+.modal-box h3{margin:0 0 10px}
+.modal-box p{margin:0 0 18px; color:var(--muted); font-size:.92rem}
