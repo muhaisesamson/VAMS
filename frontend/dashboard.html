@@ -1731,6 +1731,17 @@
       return "pending";
     }
 
+    function formatDocType(type) {
+      const map = {
+        national_id_file: "National ID",
+        army_id_file: "Army ID / Service ID",
+        discharge_file: "Discharge / retirement certificate",
+        supporting_docs: "Supporting document",
+        supporting_doc: "Supporting document"
+      };
+      return map[type] || (type ? type.replace(/_/g, " ") : "Document");
+    }
+
     function pillClass(s) {
       s = (s || "").toLowerCase();
       if (s === "verified" || s === "approved" || s === "completed") return "green";
@@ -1871,6 +1882,7 @@
           return;
         }
 
+        
         container.innerHTML = docs.map(doc => `
           <div class="doc-item">
             <div class="doc-icon">
@@ -1880,10 +1892,10 @@
               </svg>
             </div>
             <div style="min-width:0;flex:1">
-              <div class="doc-name">${doc.document_type}</div>
-              <div class="doc-meta">${doc.file_name || "Uploaded"} · ${formatDate(doc.uploaded_at)}</div>
+              <div class="doc-name">${formatDocType(doc.doc_type)}</div>
+              <div class="doc-meta">Uploaded ${formatDate(doc.created_at)}</div>
             </div>
-            <span class="pill ${pillClass(doc.verification_status)}">${doc.verification_status || "Pending"}</span>
+            <span class="pill ${pillClass(doc.status)}">${doc.status || "Pending"}</span>
           </div>`).join("");
       } catch {
         byId("docsList").innerHTML = `<div class="empty-state"><p>Could not load documents.</p></div>`;
