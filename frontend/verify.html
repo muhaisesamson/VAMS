@@ -686,11 +686,12 @@ hr.sep{
     let visibleCount = 0;
     cards.forEach((card) => {
       const status = card.getAttribute("data-status");
+      const gender = card.getAttribute("data-gender") || "";
       const searchText = card.getAttribute("data-search") || "";
       const statusMatch = activeFilter === "all" || status === activeFilter;
       const genderMatch = genderFilter === "all" || gender === genderFilter;
       const searchMatch = !term || searchText.includes(term);
-      const match = statusMatch && searchMatch;
+      const match = statusMatch && genderMatch && searchMatch;
       card.classList.toggle("is-hidden", !match);
       if (match) visibleCount++;
     });
