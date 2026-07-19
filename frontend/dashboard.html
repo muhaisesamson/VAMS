@@ -1407,6 +1407,40 @@
       .topbar { padding: 14px 16px; }
       .search-bar { min-width: 140px; }
     }
+
+    /* ─── MODALS ─── */
+    .modal-overlay{
+      position:fixed; inset:0; background:rgba(20,20,20,.5);
+      display:none; align-items:center; justify-content:center; z-index:300; padding:20px;
+    }
+    .modal-overlay.is-open{display:flex}
+    .modal-box{
+      background:var(--surface); border-radius:var(--radius); padding:24px;
+      max-width:440px; width:100%; box-shadow:var(--shadow-lg); border:1px solid var(--border);
+    }
+    .modal-box h3{margin:0 0 6px; font-size:1.05rem}
+    .modal-box p.modal-sub{margin:0 0 16px; color:var(--muted); font-size:.85rem}
+    .modal-field{margin-bottom:14px}
+    .modal-field label{display:block; font-size:.8rem; font-weight:600; margin-bottom:6px; color:var(--text)}
+    .modal-field input[type="text"],
+    .modal-field input[type="number"],
+    .modal-field select{
+      width:100%; border:1px solid var(--border); border-radius:10px;
+      padding:10px 12px; font-size:.88rem; font-family:inherit; color:var(--text); background:var(--surface-2);
+    }
+    .modal-field input[type="file"]{ width:100%; font-size:.85rem; }
+    .modal-error{color:var(--danger); font-size:.8rem; min-height:16px; margin-top:4px}
+    .modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:18px}
+    .modal-btn-primary{
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      color:#fff; border:none; border-radius:999px; padding:10px 20px;
+      font-weight:700; font-size:.88rem; cursor:pointer;
+    }
+    .modal-btn-primary:disabled{opacity:.5; cursor:not-allowed}
+    .modal-btn-secondary{
+      background:var(--surface-2); color:var(--text); border:1px solid var(--border);
+      border-radius:999px; padding:10px 20px; font-weight:700; font-size:.88rem; cursor:pointer;
+    }
   </style>
 </head>
 <body>
@@ -1545,29 +1579,6 @@
             <div class="stat-sub" id="docSub">…</div>
           </div>
 
-          <div class="stat-card gold">
-            <div class="stat-icon gold">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-            </div>
-            <div class="stat-value" id="apptCount">0</div>
-            <div class="stat-label">Appointments</div>
-            <div class="stat-sub">Upcoming schedules</div>
-          </div>
-
-          <div class="stat-card blue">
-            <div class="stat-icon blue">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              </svg>
-            </div>
-            <div class="stat-value" id="msgCount">0</div>
-            <div class="stat-label">Unread Messages</div>
-            <div class="stat-sub">Notices &amp; follow-ups</div>
-          </div>
-
           <div class="stat-card red">
             <div class="stat-icon" id="verifyIcon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -1583,23 +1594,7 @@
 
         <!-- QUICK ACTIONS -->
         <div class="quick-actions">
-          <button class="action-btn">
-            <div class="action-icon green">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-              </svg>
-            </div>
-            Apply for Pension
-          </button>
-          <button class="action-btn">
-            <div class="action-icon gold">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/>
-              </svg>
-            </div>
-            Book Appointment
-          </button>
-          <button class="action-btn">
+          <button class="action-btn" id=""uploadDocBtn>
             <div class="action-icon blue">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -1608,7 +1603,7 @@
             </div>
             Upload Document
           </button>
-          <button class="action-btn">
+          <button class="action-btn" id="updateProfileBtn">
             <div class="action-icon purple">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                 <circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
@@ -1655,90 +1650,70 @@
             </div>
           </div>
 
-          <!-- RIGHT: Requests + Resources -->
-          <div style="display:flex; flex-direction:column; gap:18px;">
-
-            <!-- My Requests -->
-            <div class="card">
-              <div class="card-header">
-                <div>
-                  <h2>My Requests</h2>
-                  <p>Active applications &amp; claims</p>
-                </div>
-                <a href="services.html" class="card-link">New request →</a>
-              </div>
-              <div class="card-body" id="requestsList">
-                <div class="skeleton h-8 w-full" style="border-radius:12px"></div>
-                <div class="skeleton h-8 w-full" style="border-radius:12px"></div>
-              </div>
-            </div>
-
-            <!-- Helpful Resources -->
-            <div class="card">
-              <div class="card-header">
-                <div>
-                  <h2>Helpful Resources</h2>
-                  <p>Guides and official forms</p>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="resource-item">
-                  <div class="doc-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                      <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <div class="row-title">VA Benefits Overview</div>
-                    <div class="row-sub">Learn what you may qualify for</div>
-                  </div>
-                  <span class="arrow">→</span>
-                </div>
-                <div class="resource-item">
-                  <div class="doc-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <div class="row-title">Find a VA Location</div>
-                    <div class="row-sub">Offices &amp; health centres near you</div>
-                  </div>
-                  <span class="arrow">→</span>
-                </div>
-                <div class="resource-item">
-                  <div class="doc-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      <polyline points="14,2 14,8 20,8"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <div class="row-title">Forms &amp; Publications</div>
-                    <div class="row-sub">Download important documents</div>
-                  </div>
-                  <span class="arrow">→</span>
-                </div>
-                <div class="resource-item">
-                  <div class="doc-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <div class="row-title">Contact Support</div>
-                    <div class="row-sub">Talk to a veterans affairs officer</div>
-                  </div>
-                  <span class="arrow">→</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div><!-- /content-grid -->
-
       </div><!-- /page-body -->
     </div><!-- /main-content -->
   </div><!-- /app-shell -->
+
+  <div class="modal-overlay" id="uploadModal">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle">
+      <h3 id="uploadModalTitle">Upload a document</h3>
+      <p class="modal-sub">Accepted formats: JPG, PNG, PDF. Max size 5MB.</p>
+      <form id="uploadForm">
+        <div class="modal-field">
+          <label for="uploadDocType">Document type</label>
+          <select id="uploadDocType">
+            <option value="national_id_file">National ID</option>
+            <option value="army_id_file">Army ID / Service ID</option>
+            <option value="discharge_file">Discharge / retirement certificate</option>
+            <option value="supporting_docs">Supporting document</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label for="uploadFileInput">Choose file</label>
+          <input type="file" id="uploadFileInput" accept=".jpg,.jpeg,.png,.pdf" />
+        </div>
+        <div class="modal-error" id="uploadModalError"></div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn-secondary" id="uploadCancelBtn">Cancel</button>
+          <button type="submit" class="modal-btn-primary" id="uploadSubmitBtn">Upload</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <h3 id="profileModalTitle">Update your profile</h3>
+      <p class="modal-sub">Changes are saved to your veteran record.</p>
+      <form id="profileForm">
+        <div class="modal-field">
+          <label for="editFullName">Full name</label>
+          <input type="text" id="editFullName" />
+        </div>
+        <div class="modal-field">
+          <label for="editPhone">Phone number</label>
+          <input type="text" id="editPhone" />
+        </div>
+        <div class="modal-field">
+          <label for="editServiceBranch">Service branch</label>
+          <input type="text" id="editServiceBranch" />
+        </div>
+        <div class="modal-field">
+          <label for="editRank">Rank</label>
+          <input type="text" id="editRank" />
+        </div>
+        <div class="modal-field">
+          <label for="editYearsServed">Years served</label>
+          <input type="number" id="editYearsServed" min="0" />
+        </div>
+        <div class="modal-error" id="profileModalError"></div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn-secondary" id="profileCancelBtn">Cancel</button>
+          <button type="submit" class="modal-btn-primary" id="profileSubmitBtn">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div class="toast" id="toast"></div>
 
@@ -1946,6 +1921,149 @@
           <p>No active requests. Use <em>Apply for Pension</em> or another service to get started.</p>
         </div>`;
     }
+
+    // ─── UPLOAD DOCUMENT MODAL ───
+    const uploadModal = byId("uploadModal");
+    const uploadForm = byId("uploadForm");
+    const uploadModalError = byId("uploadModalError");
+    const uploadSubmitBtn = byId("uploadSubmitBtn");
+      
+    byId("uploadDocBtn").addEventListener("click", () => {
+      uploadForm.reset();
+      uploadModalError.textContent = "";
+      uploadModal.classList.add("is-open");
+    });
+    byId("uploadCancelBtn").addEventListener("click", () => {
+      uploadModal.classList.remove("is-open");
+    });
+    
+    uploadForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      uploadModalError.textContent = "";
+    
+      const file = byId("uploadFileInput").files[0];
+      if (!file) {
+        uploadModalError.textContent = "Please choose a file to upload.";
+        return;
+      }
+    
+      const formData = new FormData();
+      formData.append("document", file);
+      formData.append("doc_type", byId("uploadDocType").value);
+    
+      uploadSubmitBtn.disabled = true;
+      uploadSubmitBtn.textContent = "Uploading...";
+    
+      try {
+        const res = await fetch(`${BASE_URL}/api/documents/upload`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${getToken()}` },
+          body: formData
+        });
+      
+        if (res.status === 401) {
+          localStorage.removeItem("vamsToken");
+          localStorage.removeItem("vamsUser");
+          window.location.href = "index.html";
+          return;
+        }
+      
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          uploadModalError.textContent = data.message || "Could not upload document. Try again.";
+          return;
+        }
+      
+        uploadModal.classList.remove("is-open");
+        showToast("Document uploaded successfully.");
+        await loadDocuments();
+        await loadDashboard();
+      } catch (err) {
+        uploadModalError.textContent = "The server is unavailable. Please try again shortly.";
+      } finally {
+        uploadSubmitBtn.disabled = false;
+        uploadSubmitBtn.textContent = "Upload";
+      }
+    });
+    
+    // ─── UPDATE PROFILE MODAL ───
+    const profileModal = byId("profileModal");
+    const profileForm = byId("profileForm");
+    const profileModalError = byId("profileModalError");
+    const profileSubmitBtn = byId("profileSubmitBtn");
+    
+    byId("updateProfileBtn").addEventListener("click", async () => {
+      profileModalError.textContent = "";
+      try {
+        const res = await fetch(`${BASE_URL}/api/veteran/profile`, {
+          headers: { "Authorization": `Bearer ${getToken()}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          const p = data.data;
+          byId("editFullName").value = p.full_name || "";
+          byId("editPhone").value = p.phone || "";
+          byId("editServiceBranch").value = p.service_branch || "";
+          byId("editRank").value = p.rank || "";
+          byId("editYearsServed").value = p.years_served != null ? p.years_served : "";
+        }
+      } catch (err) {
+        console.error("Could not preload profile:", err);
+      }
+      profileModal.classList.add("is-open");
+    });
+    byId("profileCancelBtn").addEventListener("click", () => {
+      profileModal.classList.remove("is-open");
+    });
+    
+    profileForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      profileModalError.textContent = "";
+    
+      const payload = {
+        full_name: byId("editFullName").value.trim(),
+        phone: byId("editPhone").value.trim(),
+        service_branch: byId("editServiceBranch").value.trim(),
+        rank: byId("editRank").value.trim(),
+        years_served: byId("editYearsServed").value !== "" ? Number(byId("editYearsServed").value) : undefined
+      };
+    
+      profileSubmitBtn.disabled = true;
+      profileSubmitBtn.textContent = "Saving...";
+    
+      try {
+        const res = await fetch(`${BASE_URL}/api/veteran/profile`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${getToken()}`
+          },
+          body: JSON.stringify(payload)
+        });
+      
+        if (res.status === 401) {
+          localStorage.removeItem("vamsToken");
+          localStorage.removeItem("vamsUser");
+          window.location.href = "index.html";
+          return;
+        }
+      
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          profileModalError.textContent = data.message || "Could not update profile. Try again.";
+          return;
+        }
+      
+        profileModal.classList.remove("is-open");
+        showToast("Profile updated successfully.");
+        await loadDashboard();
+      } catch (err) {
+        profileModalError.textContent = "The server is unavailable. Please try again shortly.";
+      } finally {
+        profileSubmitBtn.disabled = false;
+        profileSubmitBtn.textContent = "Save changes";
+      }
+    });
 
     // ─── LOGOUT ───
     byId("logoutBtn").addEventListener("click", () => {
